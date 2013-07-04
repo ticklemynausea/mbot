@@ -9,7 +9,7 @@ LIBS = @LIBS@
 .SUFFIXES:
 .SUFFIXES: .cpp .so
 
-all:	alice.so calc.so chanstat.so extra.so flood.so getnick.so invite.so \
+all: urlsniffer shell.so alice.so calc.so chanstat.so extra.so flood.so getnick.so invite.so \
 	ircop.so joinmsg.so log.so seen.so @TCL@ watch.so @WEB@ whois.so \
 	word.so
 
@@ -24,3 +24,6 @@ tcl:
 
 web:
 	@MOD_MAKE_WEB@
+
+urlsniffer:
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE) -leasycurl urlsniffer.cpp $(LDFLAGS) -o urlsniffer.so

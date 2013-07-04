@@ -34,5 +34,3 @@ dist:
 		mbot/inc/config.h.in mbot/configure.in \
 		mbot/configure mbot/Makefile.in mbot/src/Makefile.in \
 		mbot/mod/Makefile.in mbot/config/* \
-		\
-		mbot/vc/mbot.dsw mbot/vc/*.dsp

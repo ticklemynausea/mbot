@@ -657,7 +657,7 @@ void
 Script::event_privmsg (void)
 {
   mask2nick (CMD[0], source);
-  if (CMD[2][0] == '#')
+  if ((CMD[2][0] == '#') || ((CMD[2][0] == '@') && (CMD[2][1] == '#'))) {
     my_strncpy (dest, CMD[2], CHANNEL_SIZE);
   else
     mask2nick (CMD[0], dest);

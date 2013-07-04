@@ -659,8 +659,9 @@ Script::event_privmsg (void)
   mask2nick (CMD[0], source);
   if ((CMD[2][0] == '#') || ((CMD[2][0] == '@') && (CMD[2][1] == '#'))) {
     my_strncpy (dest, CMD[2], CHANNEL_SIZE);
-  else
+  } else {
     mask2nick (CMD[0], dest);
+  }
   strcpy (CMD[3], CMD[3]+num_spaces (CMD[3]));	// remove spaces from beginning
 
   if (CMD[3][0] == '\001')

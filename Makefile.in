@@ -1,0 +1,38 @@
+all:
+	cd src && $(MAKE)
+	cd mod && $(MAKE)
+
+static:
+	cd src && $(MAKE) static
+	cd mod && $(MAKE)
+
+debug:
+	cd src && $(MAKE) debug
+	cd mod && $(MAKE)
+
+conf:
+	aclocal -I config && autoconf && autoheader && rm -f config.cache
+
+clean:
+	cd src && $(MAKE) clean
+	cd mod && $(MAKE) clean
+	rm -f mbot DEADJOE config.cache
+
+dist:
+	rm -f *~ src/*~ inc/*~ mod/*~ example/*~ config/*~
+	cd .. && tar cfz mbot-@VERSION@.tgz \
+		mbot/README mbot/INSTALL mbot/INSTALL.win32 mbot/COPYING \
+		mbot/NEWS mbot/AUTHORS mbot/VERSION mbot/ChangeLog mbot/FAQ \
+		\
+		mbot/example/* \
+		\
+		mbot/scripts/hal-google-0.3a.tcl mbot/scripts/hal-syntax.tcl \
+		mbot/scripts/imdb.tcl \
+		\
+		mbot/src/*.cpp mbot/inc/*.h mbot/mod/*.cpp \
+		\
+		mbot/inc/config.h.in mbot/configure.in \
+		mbot/configure mbot/Makefile.in mbot/src/Makefile.in \
+		mbot/mod/Makefile.in mbot/config/* \
+		\
+		mbot/vc/mbot.dsw mbot/vc/*.dsp

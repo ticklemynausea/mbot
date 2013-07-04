@@ -1,0 +1,260 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "alice"=".\alice.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name calc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name chanstat
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name extra
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name flood
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name invite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ircop
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name joinmsg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name log
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name seen
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name watch
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name whois
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name word
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "calc"=".\calc.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "chanstat"=".\chanstat.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "extra"=".\extra.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "flood"=".\flood.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "invite"=".\invite.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ircop"=".\ircop.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "joinmsg"=".\joinmsg.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "log"=".\log.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mbot"=".\mbot.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "seen"=".\seen.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "watch"=".\watch.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "whois"=".\whois.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "word"=".\word.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name mbot
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

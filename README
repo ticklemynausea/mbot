@@ -1,0 +1,763 @@
+MBOT README
+
+       >>>>>>        mbot - mirage's (irc) bot         <<<<<<<<
+
+    Copyright (C) 1998-2004  Tiago Sousa <mirage@kaotik.org>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+  If you find bugs, improve something or just want to give ideas, contact me
+through email or talk to mirage on IRC networks PTlink.net or PTnet.org. :)
+The latest version can always be found at:
+
+    http://darksun.com.pt/mbot/
+
+----------------------------------------------------------------------------
+
+0. TABLE OF CONTENTS
+
+1. History
+2. Description
+3. What about eggdrop?
+4. Commands
+5. Files
+6. Users
+7. Logs
+8. Core
+9. Modules
+9.1. Alice
+9.2. Calc
+9.3. Chanstat
+9.4. Extra
+9.5. Flood
+9.6. Getnick
+9.7. Invite
+9.8. Ircop
+9.9. Joinmsg
+9.10. Log
+9.11. Seen
+9.12. Watch
+9.13. Web
+9.14. Whois
+9.15. Word
+9.16. TCL
+10. Thanks
+
+----------------------------------------------------------------------------
+
+1. HISTORY
+
+  It all started with the uncontroled lame wish to have my nick on IRC, 24h ;)
+The problem was that the shells I had at the time didn't run bitchx nor
+eggdrop, so I had to look for an alternative...
+  At the same time, I wanted to start coding in C with Linux, I had done small
+programs and wanted to do something more serious. So the project began, about
+May 1998, far from thinking it would get this big.
+
+----------------------------------------------------------------------------
+
+2. DESCRIPTION
+
+  It's an IRC bot coded in C++, being started in C. Its main advantage is that
+several bots can run simultaneously in the same process, making it ideal for
+shells where the background processes are limited, but not the connections.
+It also spares lots of resources this way, compared to running many instances
+of mbot.
+
+Other caracteristics:
+ - IPv6 networking support
+ - Partial TCL scripting compatibility with eggdrop
+ - All the standard irc commands are available
+ - Can be in many channels
+ - Flood protection
+ - Database, dictionary-like
+ - DCC Send, easily accessible and configurable
+ - DCC Chat with partyline
+ - Different access levels, defined with a userlist
+ - Recognize and use irc services (NickServ/ChanServ)
+ - Log channels and privates
+ - Can send logs to an email, when they are renewed
+ - Extensions done with dynamic libraries in C++, to which I've called
+   modules, and can be added/removed while the bot is running
+ - Conversations with an Artificial Intelligence module (based on C-Alice)
+ - Watch nicks and log when they are on IRC
+ - Lots of other stuff, check the available modules :)
+
+----------------------------------------------------------------------------
+
+3. WHAT ABOUT EGGDROP?
+
+  Eggdrop is the standard bot, but I've never liked it. Much less now. =)
+
+Pros:
+ - Easy scripts with TCL.
+(which in mbot must be coded in C++, making it harder in many aspects)
+ - Botnet.
+(i don't really understand the "usefulness" of it)
+ - Lots of ready-to-use scripts which do almost everything.
+(whatever it is, can also be done with mbot, it just has to be coded)
+ - No knowledge of C/C++ required.
+(same with mbot, unless you want to add something)
+ - Fine-grained user levels
+(overly complicated, in my opinion - i much prefer mbot's system)
+ - More things, yes.. for some reason it's the most popular bot...
+
+Cons:
+ - Only supports one bot per process
+(mbot supports as many bots as the resources you have allow.)
+ - More complex
+(mbot's configuration and usage is far less complicated)
+ - Slower and memory-hungry
+(in mbot the scripts are hardcoded, so it's faster and smaller than any TCL,
+and you need a separate process for each bot)
+ - You need to get scripts for anything you want your bot to do
+(mbot already comes with modules that respond to the most common needs)
+
+----------------------------------------------------------------------------
+
+4. COMMANDS
+
+  Commands are distributed through user levels and can be executed in privmsg
+or DCC Chat.
+
+  Note that many commands are defined in modules only. For example, to use the
+!seen, you need the seen module. Read section 8 of the README for the list,
+with a short description, of mbot's core commands (those which aren't in a
+module), and section 9 for the modules.
+
+  Some commands have "[]" or "|" in their sintax. [] means that the parameter
+is optional. For example, in "!op nick [#channel]", if you execute "!op nick"
+inside a channel, the bot will op nick in that channel. If you execute it
+in pvt with the bot, it is necessary to specify a channel, even if the bot is
+only in one channel. The "|", as in "!setmsg msg | <none>", means that only
+one of those two parameters is to be used, in this case, "msg" or "<none>".
+
+----------------------------------------------------------------------------
+
+5. FILES
+
+  The bot uses several files for configuration and internal use, most of them
+optional, depending on the modules used.
+
+WARNING: 
+Files must *not* be changed while the bot is running, FOR THEY MAY GET
+TRASHED! Turn off the bot or the corresponding module first.
+To those who'll use multiple bots/processes: YOU CAN'T USE THE SAME FILE IN
+MULTIPLE PLACES!
+
+Actually, these rules apply only to files that are to be written on, such as
+logs, .user, .word, etc. Others like the .get or .motd are ok, but I prefer to
+warn about all of them, so that later on you don't come whining to me... ;)
+
+The only file which *must* exist is the main configuration one. It has the
+following general structure:
+
+<global options>
+bot
+<this bot's configuration>
+bot
+<this other bot's configuration>
+(...etc...)
+
+  The "global options" are mainly the modules to be used and log creation.
+Although they are present for all bots, each bot has its own configuration
+inside them. For example, you may use the word module, and only declare a
+"word file.word" in one bot, so only *that* bot uses it, not the others.
+  Each "bot" section is a bot, fully independant from the others, with its
+own options. They are all documented in example.conf. The example only
+creates one bot, but you can add others, for example, by copying to the end
+of the file the info from the first bot and making the necessary changes, such
+as nick and data files used. Backup your configuration and give it a try.
+
+----------------------------------------------------------------------------
+
+6. USERS
+
+  The registered users are distributed in levels, which go from -1 to 10.
+Registered users, while not identified with the bot, have the ficticious level
+1 (with the exception of the -1 level users). The others have level 0.
+
+  There are two ways to identify: the !pass command and with !chat, which
+opens a DCC Chat, and asks for the password.
+
+  Sometimes the "identified" attribute seems to be lost unexplainably. That's
+because of some ircd's protection, not showing real ips when you're not op or
+you're not in the same channel, which may confuse the bot's authentication
+system. In any case, just identify again.
+
+  Level -1 has a special property: besides denying access to all commands,
+users with that level are automatically banned from the channel when the bot
+sees them (shitlist).
+
+----------------------------------------------------------------------------
+
+7. LOGS
+
+  The logging system is made of two components: one is the main system log
+file, which is defined by the "botlog" global configuration option. If the bot
+crashes, doesn't show up on irc, or there's a problem of some sort - that's
+the place to look into.
+
+  The other component is a much more user-definable system, perhaps a bit
+complicated at first sight. It's configurable via "logcreate" and "logmail"
+options. The idea is, you create a sort of logging facility, with a referring
+handle, defining caracteristics such as file to log to, timestamp mode, flush
+mode and rotation mode, and later in the configuration file you can have
+modules using them. Rotating logs are renewed at 6 a.m. everyday by default,
+you can change that in inc/Log.h if you really want.
+
+  Let's see a configuration example snippet of this:
+
+module mod/log.so
+logcreate mychannel 1 0 mychannel.log mychannel.old.log
+logcreate pvt 1 1 pvt.log
+bot
+log mychannel #mychannel
+log pvt <privmsg>
+
+  What does that do? First, it creates a logging handle called "mychannel",
+using mychannel.log (which rotates to mychannel.old.log) as the log file,
+always flushed, and time-only timestamp mode (see example.conf to more details
+on the options). Then another one called "pvt", that writes to pvt.log and
+doesn't rotate.
+  Afterwards, they are used by the log.so module (loaded previously) to log
+all events of #mychannel to the loghandle "mychannel", which you defined
+before, and all private msgs with the bot to the log with the handle "pvt".
+
+  My purpose with this is to be able to log several things into the same
+log file, such as pvt's with the same nick, but on different servers (remember
+that mbot is capable of having several bots living simultaneously in the same
+process). Of course, you can create as many of those logging facilities as you
+like and send whatever you want to them. For example, the log, watch and
+alice modules use them.
+
+----------------------------------------------------------------------------
+
+8. Core
+
+  These are the commands which are present in mbot's core, in other words,
+they are built-in and don't require any module.
+
+!modlist
+List all loaded modules.
+
+!modadd path
+Load the module at the given <path>.
+
+!moddel name
+Unload the module with <name>, this must be a name returned by !modlist.
+
+!quit [msg]
+Make all bots in the current process quit with <msg>, else uses the default.
+
+!set option [value]
+If <value> is specified, sets <option> to it. Otherwise just show the content
+of <option>. The available options (variables) depend on the modules loaded,
+refer to their documentation for further help (note that some options are
+part of the main code too).
+
+!loadconf [filename]
+Reload the current configuration file or use <filename>. Note that the changes
+only take effect after reloading the module(s). USE WITH CARE, in particular,
+don't change the bots' order (if multiple bots are defined of course).
+
+!away [msg]
+Put the bot away with <msg>, or without parameters, remove the away.
+
+!nick nick
+Change the bot's nick to <nick>.
+
+!unbind !command
+Disable the given <!command>. Note that it can only be recovered by restarting
+the bot or reloading that command's module.
+
+!cmdlevel !command level
+Set <!command>'s required userlevel to <level>.
+
+!join #channel
+Add <#channel> to the channel list.
+
+!part #channel
+Remove <#channel> from the channel list.
+
+!status
+Show some bot status.
+
+!topic [#channel] text
+Change the topic in the current or in the specified <#channel>, to <text>.
+
+!opme
+Give op to who executed the command. Can only be used inside a channel.
+
+!op nick [#channel]
+Give op to <nick> on the specified <#channel>.
+
+!deop nick [#channel]
+Take op from <nick> on the specified <#channel>.
+
+!kick nick [#channel] [reason]
+Kick <nick> on the specified <#channel>, with <reason>.
+
+!ban nick | mask [#channel]
+Ban <nick> or <mask> on the specified <#channel>.
+
+!unban nick | mask [#channel]
+Unban <nick> or <mask> on the specified <#channel>.
+
+!bk nick [#channel]
+Deop, ban and kick <nick> on the specified <#channel>.
+
+!invite nick [#channel]
+Invite <nick> to <#channel>.
+
+!voice nick [#channel]
+Give voice to <nick> on the specified <#channel>.
+
+!devoice nick [#channel]
+Take voice from <nick> on the specified <#channel>.
+
+!say [#channel | $nick] text
+Send <text> to a <#channel> or <nick>.
+
+!help
+Show the command list, up to the level of who executed it.
+
+!dcckill dcc_index
+Terminate the DCC specified by <dcc_index>, use !dcclist to see the indexes.
+
+!dcclist
+Show the list of active DCCs (Chat and Send).
+
+!chat
+Make the bot start a DCC Chat with who executed it.
+
+!get [file]
+Without parameters, show the files available through DCC Send, else requests
+the specified <file>.
+
+!randkick
+Kick a random non-op user where the command is made.
+
+!time
+Show current time and date.
+
+!reverse text
+Show <text> with the letters reversed.
+
+!cop nick [#channel]
+Use chanserv to op <nick> in the specified <#channel>.
+
+!cdeop nick [#channel]
+Use chanserv to deop <nick> in the specified <#channel>.
+
+!useradd mask level [msg]
+Add a user with <mask> and <level>. If <msg> is not specified, turns off the
+join msg. If <mask> already exists, overwrites the old one.
+
+!userdel mask
+Delete the user with <mask>.
+
+!userpass mask pass
+Change user's password with <mask> to <pass>.
+
+!usermsg mask msg | <none>
+Change user's join msg with <mask> to <msg>, or turns it off with "<none>".
+
+!usermask mask newmask
+Change user's mask from <mask> to <newmask>.
+
+!userlevel mask level
+Change user's access level with <mask> to <level>.
+
+!id
+Show the currently identified users with the bot.
+
+!userlist
+Show the list of registered users in the bot.
+
+!setpass password
+Change to <password> the password of who executed it.
+
+!setmsg msg | <none>
+Change the join msg of who executed it to <msg>, or turn it off with "<none>".
+
+!pass password
+Authenticate with the bot. Cannot be used inside a channel.
+
+!level
+Show the access level of who executed it.
+
+----------------------------------------------------------------------------
+
+9. MODULES
+
+  Here are descriptions and usage of each module that comes with mbot.
+
+----------------------------------------------------------------------------
+
+9.1. ALICE
+
+  A very popular module of mbot is ALICE. It's a "port" of C-Alice (by Jacco
+Bikker) to mbot, with many bugs fixed and security checks added. Still, it's
+not as stable as i'd like. You can read all about ALICE at
+http://alicebot.org. Basically, it uses a pattern match / response strategy to
+simulate a human conversation.
+
+  To get the module working, you need the data files that define ALICE's
+behaviour. You can either get them from alicebot.org, or you can use the
+ones i have at mbot's site (recommended, alice.tgz), then untar it in mbot's
+directory. I recommend mine because I included some tags to make ALICE
+interact with the "seen" and "word" modules, and also did some fixes/cleanups.
+
+To talk to the bot in a channel, use the bot's name as the first word of a
+line. In private, everything except !commands is interpreted by ALICE. You may
+want to edit alice/log/localuser.txt and change it to your settings. If you
+change any of the AIML files, you must delete alice/data/patterns.txt and
+alice/data/templates.txt, so mbot can rebuild them with your changes.
+
+  Error and conversation logging is done through mbot's own services, thus,
+"errorfile" and "logfile" in alice.ini are ignored.
+
+  I added 2 tags to ALICE, <seen> and <word>, which integrate the
+functionality of the "!seen" and "??" commands into aiml (see mbot.aiml).
+
+  A great deal of bugs from C-ALICE were fixed, but some still lurk around,
+particulary those related to <srai> tags. You'll know what I mean when it
+happens. ;)
+
+----------------------------------------------------------------------------
+
+9.2. CALC
+
+  This module implements a simple calculator machine for mbot. There's only
+one command, "!calc <expression>", where expression can use:
+
+binary operators: +, -, *, /, %, ^, ** (same as ^), =
+functions: see struct funcs[] in mod/calc.cpp, those include most ANSI C math
+functions which only require one parameter (and some aliases), fact(), rand(),
+rad(), deg().
+"ans": a special constant that holds the last valid result
+constants: see struct consts[] in mod/calc.cpp, descriptions are in portuguese.
+variables: use <name>=<expression> to define them, and use them wherever you
+would put a constant.
+
+----------------------------------------------------------------------------
+
+9.3. CHANSTAT
+
+  This module creates a html file with status about a certain channel in
+which the bot is. Note that only one channel per server can be chosen. The
+page is by default refreshed each minute. The html design was taken from an
+eggdrop script, but you can change it at will.
+
+  Just put this in the configuration file:
+"chanstat #channel filename_html filename_stat number"
+
+ filename_html: the html to be created
+ filename_stat: where the history stats are kept. THE FILENAME_STAT IS NOT
+   BEING USED YET! So don't worry about it. Just put there a valid name,
+   although it won't be used (yet).
+ number: 1 or 0, depending on whether you want to show the users' address
+	 or not.
+
+  You can also set the time between stat refreshes with
+"set chanstat_refresh <number of seconds>"
+whose default is 60.
+
+----------------------------------------------------------------------------
+
+9.4. EXTRA
+
+  This module adds some not-too-useful commands... !raw, !dccchat (NOT a real
+DCC Chat implementation), !ping, !scan and !host. Try them if you want to.
+
+  By default, when a shitlisted nick is kick/banned, some pings aren't sent to
+its host. Use this to turn that on:
+
+set extra_akickping 1
+
+----------------------------------------------------------------------------
+
+9.5. FLOOD
+
+  This module is the privmsg flood detector. It watches all channels in each
+server and kicks/warns users if certain limits are reached. Note that it does
+not bother users with level >= 5. These are the configuration options:
+
+ Number of equal msgs to be considered flood (0 to turn off):
+set flood_maxmsg <num>
+
+  Number of msgs (may be different) with the same mask (0 to turn off):
+set flood_maxmask <num>
+
+  Number of msgs beyond the 2 defined before, to kick. If not 0, sends in pvt
+the flood_kickmsg when flood is detected. Default is 0.
+set flood_maxwarn <num>
+
+  Reason of the flood warn/kick:
+set flood_kickmsg <text>
+
+----------------------------------------------------------------------------
+
+9.6. GETNICK
+
+  This module attempts to register a specified nick, by repeatedly
+changing the bot's nick into the desired nick, and sending a register command
+to the irc services. Assuming the nick is still registered, after a while
+our nick gets changed to something like "Guest23456" or "_nick-", etc,
+depending on your irc network. If this happens, the bot changes to its desired
+nick again, and so it goes, ad infinitum, until the nick register has
+dropped. This shouldn't be used in a normal, "production" mbot sitting in a
+channel. These are the configuration options:
+
+  Nick we want to register:
+set getnick_nick <nick>
+
+  Command to register the nick (depends on the irc network/services):
+set getnick_cmd nickserv register _dark
+
+----------------------------------------------------------------------------
+
+9.7. INVITE
+
+  This module adds the command "invite", which when executed in pvt with the
+bot, makes it invite you to a specified channel. Activate this with:
+
+set invite_channel <#channel>
+
+----------------------------------------------------------------------------
+
+9.8. IRCOP
+
+  This is a module which probably no one will ever use ;) because giving
+oper status to a bot is very risky. Anyway, this only implements a !kill
+command. Use it by setting the oline's password (it uses the current nick's
+oline):
+
+ircop password
+
+in the configuration file.
+
+----------------------------------------------------------------------------
+
+9.9. JOINMSG
+
+  This module sends a file, line by line, to everyone that joins the specified
+channel. Note that this module has NOTHING to do with each registered user's
+join message. The file is sent to everyone, and since it's opened in readonly
+mode, it can be used in multiple bots.
+  To use, put this in the configuration file:
+
+joinmsg <#channel> <filename>
+
+----------------------------------------------------------------------------
+
+9.10. LOG
+
+  This module logs channels and/or privmsgs from certain nicks to the bot.
+It uses a previously created loghandle to write to. You can choose whether
+to log the users' real IP or generate fake ones, useful when the channel
+logs are online. This is specified on the 3rd parameter, with a "1" to log
+real IPs or "0" to log fake ones.
+
+To log a channel into <loghandle>, with fake IPs:
+"log loghandle #channel 0"
+
+To log privmsgs from <nick>, with real IPs:
+"log loghandle nick 1"
+
+If you want to log ALL privmsgs with the bot, with real IPs:
+"log loghandle <privmsg> 1"
+
+----------------------------------------------------------------------------
+
+9.11. SEEN
+
+  This module manages the !seen command. Its purpose is to keep record of
+when a certain nick was last seen by the bot. To acomplish this, it looks for
+quit, part, kick, nick and join events and saves the nicks, along with a
+timestamp, in the specified file. That file is NOT meant to be editable.
+  So that's the only configuration option to place in the .conf:
+"seen somefile.seen"
+  If this .seen file doesn't exist (which normally happens when the bot is
+being configured for the first time), it will be automaticaly created. Use a
+different file for each bot/server because mbot uses them separatedly.
+
+----------------------------------------------------------------------------
+
+9.12. WATCH
+
+  This module is useful to track a nick's presence on irc, using the watch
+command that most ircds implement. It logs the login/logout time, ircname
+and irc server that the nick used. To set a watch on some nick, use:
+
+"watch loghandle nick"
+
+where <loghandle> is a logging facility created previously by logcreate, and
+<nick> is the nick you want to keep an eye on.
+
+----------------------------------------------------------------------------
+
+9.13. WEB
+
+  This module implements several commands that show some news sites'
+headlines. Requires libxml to be installed.
+
+Commands:
+
+!freshmeat - freshmeat.net
+!gildot - gildot.org
+!bsdtoday - bsdtoday.com
+!useperl - use.perl.org
+!slashdot - slashdot.com
+!linuxtoday - linuxtoday.com
+!unsecurity - unsecurity.org
+!securityfocus - www.securityfocus.com
+
+----------------------------------------------------------------------------
+
+9.14. WHOIS
+
+  This module implements a frontend to the whois database, using the "whois"
+shell command commonly found in unixes. It has *nothing* to do with irc's
+whois. You should try to use it in your shell to know what i'm talking
+about, in case you're unaware of its informative potencial. I use
+whois.ripe.net, which means it returns info about IPs, not domains.
+
+  If you have a whois program that only works with RIPE, you must set the
+variable "whois_ripe" to 1, in the configuration file, like this:
+
+"set whois_ripe 1"
+
+----------------------------------------------------------------------------
+
+9.15. WORD
+
+  This module provides a dictionary-like database implementation. The
+keywords are not case sensitive. There are 6 available commands, they are:
+
+!learn- word num
+Delete <num> words from <word>'s definition, starting from the end.
+
+!learn+ word text
+Add <text> to <word>'s definition. If <word> doesn't exist, create it.
+
+!learn word [text]
+Add or replace <word> with <text>. If <text> if not especified, delete <word>
+instead (if it exists).
+
+!forget word
+Delete the especified <word>.
+
+!wordcount
+Say the number of words defined.
+
+?? word
+Search <word> in the database and return its content.
+
+  The options to configure:
+
+"word somefile.word"
+which of course contains the database.
+
+"wordnotice"
+which makes the "??" queries to be answered with notices instead of privmsg.
+
+"wordnotdef That word is not defined!"
+is to change the default message when words not defined are asked for.
+
+"wordlog loghandle"
+uses log with <loghandle> to log succesful !learn commands
+
+----------------------------------------------------------------------------
+
+9.16. TCL
+
+  This module implements a subset of eggdrop's tcl functionality. However,
+don't just blindly load eggdrop scripts and hope they'll work flawlessly.
+There are differences in the way mbot and eggdrop works, especially when
+handling users and their flags. And don't forget to see the bot's log,
+missing tcl commands and errors are put in it. This module is still very
+incomplete, but many interesting scripts can already be used. Check the
+scripts/ directory for some examples. Each bot uses a separate tcl
+interpreter, as one would expect from mbot.
+
+  To load a TCL script in the configuration file, use:
+
+"tcl name.tcl"
+
+  To load it when the bot is online, use the command:
+
+!tcl load name.tcl
+
+  To evaluate a given tcl expression, use the command:
+
+!tcl eval <expression>
+
+  If you need to remove a given script, your best bet is to use "!tcl eval
+unbind ..." or simply "!moddel tcl" / "!modadd mod/tcl.so" (which will reset
+all tcls).
+
+  As you know, mbot uses levels instead of flags. Thus, I had to do some
+conversions. They are:
+ 
+        - -> 0          h -> -1		c -> 0		v -> 2
+        m -> 9		o -> 5		p -> 1		q -> -1
+        n -> 10 	d -> -1		b -> 10		u -> -1
+ 	t -> 10		k -> -1		j -> 9		a -> 5
+
+  Bindings implemented:
+pub, dcc, msg, pubm, msgm, notc, join, part, sign, topc, kick, nick,
+ctcp, ctcr, raw, chat
+
+  (Some) known bugs/limitations:
+- uses only * and ? match characters
+- doesn't support dcc chat channels
+- mbot ignores the return value of the proc in bind ctcp/ctcp/raw and always
+  does its internal processing
+- no botnet
+- dumpfile sends any file
+- chanlist ignores flags and sends all
+- in adduser, mask=handle!hostmask_user@hostmask_host, level=0
+- delhost always returns 0
+- dccputchan doesn't use the channel
+- dccdumpfile sends any request
+- resetchan does nothing
+- pushmode simply sends the modes, doesn't queue them
+- flushmode has the same problem as pushmode
+- dnslookup is not asynchronous (in fact nothing is done yet)
+- setudef isn't implemented because mbot doesn't use channel flags
+
+  You can find a (probably incomplete) list of unimplemented commands in
+the beginning of mod/tcl.cpp.
+
+----------------------------------------------------------------------------
+
+10. THANKS
+
+Although the bot was programmed mainly by me, many people have been important
+throughout the project:
+ - Death-Angel, for all the conversations we had about the bot, and the
+   initial help on C.
+ - Vladimir & korsh, for accepting the bot on #Evora even in its initial
+   phase, which gave me motivation to continue and improve.
+ - bluud, for helping me administer DarkSun, especially when the user
+   registers began.
+ - Netcyborg, for showing me how to declare variables of functions.
+ - zerit0, for the cool mbot logo (no longer used though).
+ - FB of ProActive Web Design (http://www.proactive.com.pt) for the site.
+ - Hal9000, for allowing me to distribute his tcl scripts
+ - Many others, for the ideas, suggestions and using mbot on their channels.
+

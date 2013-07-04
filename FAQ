@@ -1,0 +1,10 @@
+Q: !ping doesn't work
+A: Make sure the ping command is working in the shell, because mbot uses it.
+
+Q: ALICE module only answers "<srai>WHAT IS CUSTOMER SERVICE</srai>" in
+reply to whatever text.
+A: Probably you cancelled mbot in the first time alice was used, causing the
+data files to be empty and useless. Delete both alice/data/patterns.txt and
+alice/data/templates.txt and rerun mbot (and let it build these files, it
+can take a while).
+

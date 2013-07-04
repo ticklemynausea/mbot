@@ -1,0 +1,30 @@
+CXX = @CXX@
+CXXFLAGS = @SRC_CXXFLAGS@
+LDFLAGS = @LDFLAGS@ @SRC_LDFLAGS@ @TCL_LIBS@ @XML_LIBS@
+INCLUDE = @top_srcdir@/inc
+BIN = @top_srcdir@/@PACKAGE@
+LIBS = @LIBS@
+.SUFFIXES:
+.SUFFIXES: .cpp .o
+
+all: mbot
+
+clean:
+	rm -f *.o DEADJOE
+
+OBJS = mbot.o missing.o scriptcmd.o utils.o Bot.o Channel.o \
+	List.o ListUsers.o ListVars.o Log.o Module.o Net.o \
+	NetDCC.o NetServer.o Script.o Services.o Strings.o Text.o
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE) $< -c
+
+mbot:	$(OBJS)
+	$(CXX) -s $(LDFLAGS) $(LIBS) $(OBJS) -o $(BIN)
+
+static: $(OBJS)
+	$(CXX) -s $(LDFLAGS) -static $(LIBS) $(OBJS) -o $(BIN)
+
+debug:  $(OBJS)
+	$(CXX) $(LDFLAGS) $(LIBS) $(OBJS) -o $(BIN)
+

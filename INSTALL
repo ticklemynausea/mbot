@@ -1,0 +1,79 @@
+
+These are instructions to compile and run mbot. Please check the README for
+further info.
+
+WINDOWS USERS: read INSTALL.win32 first, and then skip to "QUICKSTART".
+
+PLEASE NOTE: I will not answer any questions related to unix environment, be
+it copying and editing files, configuring crontab, whatever.
+Also, don't bother to ask me questions on IRC about running mbot for the first
+time. If you can't do it, maybe this bot is not suited for you. Try eggdrop.
+
+>> PREREQUISITES
+
+Mandatory:
+- C++ compiler environment
+Optional:
+- libxml-1.x for the web module (2.x isn't backwards compatible)
+- tcl 8.4 or newer for the tcl module (make sure a libtcl.so exists, not
+  only libtcl8.4.so or similar, usually found in /usr/lib; creating a
+  symlink might be a good idea if it doesn't exist)
+- whois 4.x for the whois module
+
+>> COMPILING
+
+If you are upgrading from a previous install, first type
+
+"make clean"
+
+and read the ChangeLog and/or example.conf, because things change.
+
+Then,
+
+"./configure"
+(some systems have a strange shell in /bin/sh, try "bash ./configure" if you
+get the error "configure: Command not found.")
+If you get IPv6 related errors, use --disable-ipv6 in ./configure.
+
+and if all goes well,
+
+"make"
+
+If compilation fails in your system, contact me so I can fix mbot. I hope to
+get mbot up and running in all recent unix-likes. Currently, I know it works
+on Linux, FreeBSD, OpenBSD, NetBSD, SunOS and Tru64 UNIX. However, my main
+development platform is Linux, so if something breaks in another OS, please
+report it.
+
+In case you want to use the ALICE module, you'll also need to get this:
+http://darksun.com.pt/mbot/sources/alice.tgz
+It contains the necessary data files to get alice talking and dancing. :)
+Just untar it in mbot's directory. Also don't forget to see the README.
+
+>> QUICKSTART
+
+- Copy all ./example/example.* files to ./bot_nick.* (one by one, and of
+  course bot_nick can be any filename, but for clarity's sake you should use
+  your bot's nickname)
+
+- Edit bot_nick.conf and configure it to your needs, don't forget to change
+  the filenames.
+
+- Edit bot_nick.users and change the mask in it (mirage!*@*) to your
+  own, like yournick!*@*, and DON'T touch or add anything else. This
+  should be the only time you'll mess with the user file directly, because
+  it's safer to use mbot's commands to configure things.
+
+- Start the bot with './mbot -c bot_nick.conf'. Then, inside irc, do a 
+  '/msg bot_nick !pass foo'. Any password works, "foo" is just an example. It
+  should say "Password correct". If not, try '/msg bot_nick !level' and make
+  sure it responds with a "Access level 10, not identified.". If it doesn't,
+  either the mask is messed up, or you didn't load any user file in the
+  configuration file.
+
+- Now at least change your password with !setpass, and use !help to explore :)
+
+- If something goes wrong, try running mbot with the '-d' option, which turns
+  on some debugging output and prevents it from forking into background. Also
+  don't forget to look inside mbot.log for error messages. The FAQ is a good
+  troubleshooting resource too.

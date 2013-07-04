@@ -1,0 +1,280 @@
+/* inc/config.h.in.  Generated from configure.in by autoheader.  */
+
+/* CAT_PATH */
+#undef CAT_PATH
+
+/* ECHO_PATH */
+#undef ECHO_PATH
+
+/* Define if IPv6 support is enabled. */
+#undef ENABLE_IPV6
+
+/* Define if SSP C++ support is enabled. */
+#undef ENABLE_SSP_CXX
+
+/* HAS_IOS_BINARY */
+#undef HAS_IOS_BINARY
+
+/* HAS_IOS_NOCREATE */
+#undef HAS_IOS_NOCREATE
+
+/* HAS_IOS_NOREPLACE */
+#undef HAS_IOS_NOREPLACE
+
+/* HAS_SETUGID */
+#undef HAS_SETUGID
+
+/* Define to 1 if you have the `crypt' function. */
+#undef HAVE_CRYPT
+
+/* Define to 1 if you have the <crypt.h> header file. */
+#undef HAVE_CRYPT_H
+
+/* Define to 1 if you have the `daemon' function. */
+#undef HAVE_DAEMON
+
+/* Define to 1 if you have the `dlopen' function. */
+#undef HAVE_DLOPEN
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `freeaddrinfo' function. */
+#undef HAVE_FREEADDRINFO
+
+/* Define to 1 if you have the <fstream> header file. */
+#undef HAVE_FSTREAM
+
+/* HAVE_FSTREAM_ATTACH */
+#undef HAVE_FSTREAM_ATTACH
+
+/* Define to 1 if you have the `gai_strerror' function. */
+#undef HAVE_GAI_STRERROR
+
+/* Define to 1 if you have the `getaddrinfo' function. */
+#undef HAVE_GETADDRINFO
+
+/* Define to 1 if you have the `getgrnam' function. */
+#undef HAVE_GETGRNAM
+
+/* Define to 1 if you have the `getnameinfo' function. */
+#undef HAVE_GETNAMEINFO
+
+/* Define to 1 if you have the `getopt' function. */
+#undef HAVE_GETOPT
+
+/* Define to 1 if you have the `getpid' function. */
+#undef HAVE_GETPID
+
+/* Define to 1 if you have the `getpwnam' function. */
+#undef HAVE_GETPWNAM
+
+/* Define to 1 if you have the <grp.h> header file. */
+#undef HAVE_GRP_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <iomanip> header file. */
+#undef HAVE_IOMANIP
+
+/* Define to 1 if you have the <iostream> header file. */
+#undef HAVE_IOSTREAM
+
+/* Define to 1 if you have the `crypt' library (-lcrypt). */
+#undef HAVE_LIBCRYPT
+
+/* Define to 1 if you have the `dl' library (-ldl). */
+#undef HAVE_LIBDL
+
+/* Define to 1 if you have the `m' library (-lm). */
+#undef HAVE_LIBM
+
+/* Define to 1 if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define to 1 if you have the `xml' library (-lxml). */
+#undef HAVE_LIBXML
+
+/* Define to 1 if you have the `memcpy' function. */
+#undef HAVE_MEMCPY
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* HAVE_MKSTEMP */
+#undef HAVE_MKSTEMP
+
+/* Define to 1 if you have the <netinet/in_systm.h> header file. */
+#undef HAVE_NETINET_IN_SYSTM_H
+
+/* Define to 1 if you have the <netinet/tcp.h> header file. */
+#undef HAVE_NETINET_TCP_H
+
+/* Define to 1 if you have the <ostream> header file. */
+#undef HAVE_OSTREAM
+
+/* Define to 1 if you have the <ostream.h> header file. */
+#undef HAVE_OSTREAM_H
+
+/* Define to 1 if you have the <parser.h> header file. */
+#undef HAVE_PARSER_H
+
+/* Define to 1 if you have the <pwd.h> header file. */
+#undef HAVE_PWD_H
+
+/* Define to 1 if you have the `setgid' function. */
+#undef HAVE_SETGID
+
+/* Define to 1 if you have the `setsid' function. */
+#undef HAVE_SETSID
+
+/* Define to 1 if you have the `setuid' function. */
+#undef HAVE_SETUID
+
+/* Define to 1 if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
+/* HAVE_SNPRINTF_T */
+#undef HAVE_SNPRINTF_T
+
+/* Define if struct sockaddr_in6 has the sin6_scope_id member */
+#undef HAVE_SOCKADDR_IN6_SCOPE_ID
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strcasecmp' function. */
+#undef HAVE_STRCASECMP
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strncasecmp' function. */
+#undef HAVE_STRNCASECMP
+
+/* Define to 1 if you have the `strsep' function. */
+#undef HAVE_STRSEP
+
+/* Define to 1 if the system has the type `struct sockaddr_in6'. */
+#undef HAVE_STRUCT_SOCKADDR_IN6
+
+/* Define to 1 if you have the <sys/bitypes.h> header file. */
+#undef HAVE_SYS_BITYPES_H
+
+/* Define to 1 if you have the <sys/inttypes.h> header file. */
+#undef HAVE_SYS_INTTYPES_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* HAVE_TIOCNOTTY */
+#undef HAVE_TIOCNOTTY
+
+/* Define to 1 if you have the `truncate' function. */
+#undef HAVE_TRUNCATE
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
+
+/* HAVE_VSNPRINTF_T */
+#undef HAVE_VSNPRINTF_T
+
+/* Define to 1 if you have the `xmlKeepBlanksDefault' function. */
+#undef HAVE_XMLKEEPBLANKSDEFAULT
+
+/* Define to 1 if you have the <xmlmemory.h> header file. */
+#undef HAVE_XMLMEMORY_H
+
+/* HOST */
+#undef HOST
+
+/* MBOT_CRYPT */
+#undef MBOT_CRYPT
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* PERL_PATH */
+#undef PERL_PATH
+
+/* PING_PATH */
+#undef PING_PATH
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
+
+/* SENDMAIL_PATH */
+#undef SENDMAIL_PATH
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* VERSION */
+#undef VERSION
+
+/* VERSION_STRING */
+#undef VERSION_STRING
+
+/* WHOIS_PATH */
+#undef WHOIS_PATH
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `unsigned' if <sys/types.h> does not define. */
+#undef size_t
+
+/* socklen_t */
+#undef socklen_t
+
+/* Define to `unsigned char' if <sys/types.h> does not define. */
+#undef u_char
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef u_int
+
+/* Define to `unsigned long' if <sys/types.h> does not define. */
+#undef u_long
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#undef u_short
+
+/* uint32_t */
+#undef uint32_t
+
+/* uint_fast32_t */
+#undef uint_fast32_t

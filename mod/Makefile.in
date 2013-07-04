@@ -1,0 +1,26 @@
+CXX = @CXX@
+CXXFLAGS = @MOD_CXXFLAGS@
+TCL_CPPFLAGS = @TCL_CPPFLAGS@
+XML_CPPFLAGS = @XML_CPPFLAGS@
+LD = @LD@
+LDFLAGS = @MOD_LDFLAGS@
+INCLUDE = @top_srcdir@/inc
+LIBS = @LIBS@
+.SUFFIXES:
+.SUFFIXES: .cpp .so
+
+all:	alice.so calc.so chanstat.so extra.so flood.so getnick.so invite.so \
+	ircop.so joinmsg.so log.so seen.so @TCL@ watch.so @WEB@ whois.so \
+	word.so
+
+clean:
+	rm -f *.so DEADJOE
+
+.cpp.so:
+	@MOD_MAKE@
+
+tcl:
+	@MOD_MAKE_TCL@
+
+web:
+	@MOD_MAKE_WEB@

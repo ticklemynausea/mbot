@@ -1,0 +1,10 @@
+# lines with "#" are.. guess it
+
+# !get's help, show all lines starting with ":"
+:usage: !get file  --  available files:
+:conf - my configuration! i wouldn't share this if i were you...
+:users - my userlist, with passwords! nice, heh? ;)
+
+# file list, in the format "name_to_!get path_of_real_file"
+conf example.conf
+users example.users

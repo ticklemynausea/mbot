@@ -1,0 +1,346 @@
+5.2.0  --  19/08/2004
+  - nice report printed when ./configure ends
+  - improved libtcl and libxml detection, and both can be disabled
+  - support to set user and group identity of mbot's process
+  - fixed linker problem with OpenBSD >3.3
+  - fixed typo in !ban's help
+  - better error checking when temporary file creation fails
+  - fixed minor bug with older bash in configure.in (found by blackfile)
+  - changed !status and ctcp userinfo to show host and pointer size
+  - updated module "web" and removed !bsdtoday
+  - fixed 64 bits problems in module "alice"
+  - bugfixes/updates in module "calc" (!calcb/h now goes up to 64 bits)
+  - small portability fixes for GCC 3.4
+  - improved support for cross-compiler toolchain (for example, use
+    ./configure --host=x86_64-linux to build for 64bit-enabled AMD64 Linux)
+
+5.1.0  --  09/01/2004
+  - module "log" can log fake hosts instead of the real ones
+  - fixed bug that caused mbot to disconnect when the system date changed
+  - cleaned up the module classes' names
+  - module "tcl" got the commands: timer, killtimer, timers, utimers and
+    putquick (the included imdb.tcl uses them)
+  - SIGSEGV handler no longer loops on some errors
+  - string compare madness of replies and events was sedated
+  - module "calc" got a not() (bitwise negation), fixed small problems in
+    fact() and operators &, |, >> and << now use unsigned long int, and
+    !calcr answers in roman numerals
+  - checks for -fstack-protector from ssp and uses it by default, see:
+    http://www.research.ibm.com/trl/projects/security/ssp/
+    (disable with --disable-ssp)
+
+5.0.0  --  05/07/2003
+  - fixed possible crashes when the hosts were undefined in the conf file
+  - fixed bug in Strings.cpp when assigning one string to another
+  - tons of improvements in module "tcl" and is now officialy supported!
+  - !learn- in module "word" didn't delete words with length 1 (bug in
+    Death-Angel@PTnet's learn_minus_num(), so i wrote my own) (found by
+    foo@PTnet)
+  - !whois wasn't showing its help (found by Vladimir@PTnet)
+  - new commands !calch, !calcb and !calco in module "calc" to return
+    results in hexadecimal, binary or octal respectively, but only for
+    unsigned integers. Also supports ',' in addition to '.' in float
+    numbers, and some constants were improved
+  - compiles with libtcl 8.4.x
+  - random_num() got a math upgrade (doh)
+  - removed unsecurity.org and updated securityfocus.com in module "web"
+  - the usual code cleanup and eye candy here and there
+  - IPv6 networking support
+  - portability fixes for GCC 3.x and Tru64
+  - channel name limitation fixed in module "invite"
+  - fixes in the !set system
+  - arccos, arcsen, arcsin and arctan functions were buggy in module "calc"
+    (found by Vladimir@PTnet)
+  - mail logs are now sent with "To:" header (patch by Death-Angel@PTnet)
+  - new core command !server, specially useful when the bot is in a split
+    server (idea by Death-Angel@PTnet)
+  - fixed a bug when the bot reconnects, user id flag was not being cleared
+  - updated configure.in and related scripts to support newer autoconf
+  - removed support in module "watch" to send SMS
+  - added operators ">>", "<<", "&" and "|" to module "calc", and the number
+    notation "101010b" (binary) and "0x12af" (hex) (idea by lucipher@PTnet)
+
+4.9.1  --  28/05/2002
+  - fixed a bug when closing dccs
+  - updated module "whois" for the newer whois clients
+
+4.9  --  05/03/2002
+  - updated 3 sites of module "web"
+  - fixed possible crash when logging more than 6 mode changes at once
+  - fixed sigfpe bug in !calc's rand() with numbers >2^32/2
+  - module "log" now also logs notice and topic changes
+  - random salt is used when a user password is set
+  - fixed timeout that happened when changetime was a positive value
+  - can send a server password which may be set with the "host" parameter
+  - fixed bug in joinmsg.cpp that caused it to stop working in channels with
+    large names
+  - upgraded config.guess
+  - small fix in web.cpp with at least libxml 1.3.7
+  - module "alice" no longer responds in dcc chat
+
+4.8  --  15/05/2001
+  - Moved module information to the README
+  - the password field in the user file can now be empty, in which case any
+    password is accepted
+  - small improvements related to dcc
+  - created the pseudo-constant "ans" in !calc that holds the last result
+  - class fstreamtmp now uses mkstemp() when available
+  - !help <command> now shows a description of the command
+  - modules no longer need to unbind their commands on unload, because that
+    is done automatically by ~CModule()
+  - removed the command !deopme
+  - !modadd now refuses to load an already loaded module
+  - some optimizations in !get
+  - optimized CString and created CStringFixed
+  - compiles in NetBSD
+  - module "web" to show the news headlines of several sites (libxml, aka
+    gnome-xml, is required)
+  - improved CNet::readln() to read the last line of a stream even if it
+    doesn't end with \n, prevented CNet::writeln() from writing more than
+    500 bytes (ptnet ignores the whole line), and created the class CNetHttp
+  - fixed "case" bug in joinmsg.cpp
+  - created the special module "getnick"
+
+4.7  --  20/03/2001
+  - !useradd now prevents adding an user with an existing mask
+  - vhost support works again
+  - fixed (again) the CR/LF problems in CText
+  - fix in CNet to detect when a server's socket dies
+  - fixed bug in CText which made it skip empty text lines
+  - added the command !cmdlevel that changes a given command's required user
+    level, and a similar configuration option
+  - removed the "var" element of struct module_type
+  - module "whois" has a variable to specify the use of the regular whois
+    program or the RIPE-only version
+  - fixed a silly #ifdef typo in module "extra", !dccchat works again
+  - finished replacing file access with stdio by fstreams
+  - cleaned up a bit of CNet and CNetDCC
+  - several fixes to add Visual C++ support (and included a workspace), and
+    partial compilation support for cygwin (module usage isn't supported)
+  - module "watch" can send SMS using the included mtnsms.pl
+  - removal of "-q" option in command line ("quiet" in configuration file)
+  - massive cleanup of module "alice" (and there's still a lot to do)
+
+4.6  --  30/11/2000
+  - minor fixes to support glibc 2.2
+  - increased use of inheritance
+  - new module "calc" with the command !calc, a simple calculator
+  - moved the ctcp module back into mbot's core
+  - created the class CString and upgraded code everywhere
+  - module "extra" no longer pings akicked masks by default
+  - changed net.cpp into the class CNet
+
+4.5  --  29/10/2000
+  - fixed a silly fatal bug in CText which affected at least !loadconf
+  - freebsd compilation fix
+  - optimizations in seen module and number of nick entries raised to 2000
+  - many optimizations in the word module
+  - use of class inheritance in CUsers and CVars (also renamed them)
+  - several bugs related to CUsers were fixed
+  - use of CText in !get
+  - started to replace stdio with fstreams
+
+4.4  --  29/09/2000
+  - !ping was improved
+  - removed !swapop and !sayreverse
+  - SIGSEGV handler raises SIGQUIT to dump core
+  - all !command's help sintax was slightly changed
+  - strsplit() usage optimized
+  - CScript::add*/del* were replaced by CList
+  - the usual round of cleanups
+  - full date is now used in mbot's main log
+  - added a whois module to inquire the whois database about given IPs (NOT
+    related to irc's whois command - uses the shell's whois if available)
+
+4.3  --  25/09/2000
+  - added a watch module to log a nick's presence
+  - !work renamed to !raw
+  - created signal handlers for SIGTERM and SIGSEGV
+  - all main* modules were reintegrated back into mbot's core, and no longer
+    exist in separate (obviously, don't try to load them in the .conf)
+  - registered user code rewritten, no limit imposed for their number
+  - compilation problem with OpenBSD solved
+  - major code cleanups and optimizations in cpu usage and memory consumption
+  - new module based on C-Alice
+  - use of CList class, replacing some lists
+
+4.2  --  08/09/2000
+  - another load of *printf-related bugs fixed, this time with SEND_TEXT
+  - use of non-blocking sockets while connecting
+  - threads are no longer used
+
+4.1  --  13/07/2000
+  - many %-format bugs fixed
+  - increased logging capabilities
+  - thread usage in each connect()
+
+4.0  --  20/02/2000
+  - command levels are #define'd in the beginning of modules
+  - seen module now ignores "Guest*" nicks, used in some networks' services
+  - use of watch command to control identified users
+  - several holes fixed related to !part
+  - now works on SunOS
+  - support for channel keys
+  - tcl module implementing a subset of eggdrop's scripting capabilities
+  - !adduser and !deluser changed to !useradd and !userdel, for consistency
+  - fixed bug when logging nick changes
+  - !set and !loadconf are two long-planned commands, finally implemented
+  - the main*.so modules changed their name and options in the .conf have
+    changed too - you must rebuild your configuration file
+  - new "variable" philosophy, many configuration parameters are now options
+    changeable in runtime with !set (or even !loadconf followed by !mod*)
+  - fixed bug in !modadd with an incorrect path
+
+3.4  --  20/08/1999
+  - ctcp userinfo improved
+  - reorganized irc services code
+
+3.3  --  19/08/1999
+  - !topic command added
+  - many module bugs fixed
+  - some improvements in dcc motd's code
+  - fixed bug in !status' uptime
+  - currently supported platforms to run mbot are Linux, OpenBSD and FreeBSD
+  - use of GNU Autoconf to produce the 'configure' script and makefiles
+  - source code formatting compliant to GNU standards
+  - option to flush or not the logs
+  - better time keeping
+  - joinmsg module now handles multiple channels per bot
+  - timeout when connecting, allows a faster reconnect if the server is down
+  - added check for dead servers
+
+3.2  --  21/07/1999
+  - rewritten code in joinmsg and CBot
+  - dynamic module load/unload support (!modlist, !modadd and !moddel)
+  - option in chanstat module to hide users' address
+  - nasty bugs fixed in irc_connect() that was causing severe cpu waste when
+    not connected, and irc_read() which was stopping the bot to reconnect
+    after an ircd shutdown
+  - bot's time keeping can now be tweaked (useful when bot is in a different
+    timezone than the server it's connected to) with "timechange" parameter
+
+3.1  --  17/06/1999
+  - seed for rand() is initialized
+  - !randkick command, which kicks a random non-op user
+  - word module now supports many bots using the same wordfile
+  - cleaned up code in !forget
+  - even more bounds checking
+  - added "wordnotdef" configuration parameter
+  - minor fix on dcc chat
+  - squashed a bug with the nick when reconnecting a server
+  - logger for the bot's errors and important events
+  - show bot's uptime in !status
+  - improved the stats module
+
+3.0  --  27/04/1999
+  - module to send notices to all users, when they join a channel
+  - module to generate channel stats in html format
+  - services' access style configurable (/nickserv or /msg nickserv)
+  - changed the delimiter character to ':' in user files
+  - improved seen module
+  - full translation to english
+  - many bugfixes and optimizations
+  - ircop suport
+  - safer temporary file creation
+  - script to automagically create Makefiles for the system in use
+  - complete remodeling of the scripts structure, now they are dynamic 
+    libraries (modules), loaded or not acording to the configuration file
+
+2.1  --  09/03/1999
+  - commands: !unbind, !chat (changed the old one to !dccchat), !dcclist,
+    !dcckill, !swapop
+  - use of lists and hash tables in several places, instead of arrays
+  - greater abstraction in managing !commands, no need for #defines anymore
+  - support to dcc chat, with partyline
+  - !get easier to configure, now with a specific file
+  - fixed bug in parsing, now works on efnet
+  - can send logs to an email
+  - in case of flood, can warn the nick before kicking
+  - 1st open source version
+
+2.0  --  23/01/1999
+  - each channel now has a current users list
+  - can now disable the welcome message
+  - several bugs removed, specially in !get
+  - better use of class destructors
+  - some code reorganizations
+  - some changes in the log format
+  - levels structure slightly changed
+  - improved output for !level and !userlevel
+  - commands: !ping, !chat, !seen
+  - starting a documentation :)
+  - sockets leak in net.cpp fixed
+  - support for virtualhost
+  - floods can now be configured
+
+1.7  --  22/12/1998
+  - dcc send support
+  - deop whoever takes op from the bot (with chanserv)
+  - can log channels and privmsgs
+  - support for the new ptnet services
+  - remodeling of the event, reply and command handlers
+  - use of #defines to have different "scripts" at source level
+
+1.6  --  01/12/1998
+  - better control over the userlist
+  - maximum and minimum levels defined
+  - stop access to nick/chan/memo/operserv with !say/!sayreverse and to
+    nickserv com !work
+  - commands: !reverse, !sayreverse, !scan, !cop, !cdeop, !id, !learn+
+  - bug in !kick and !bk solved
+
+1.5  --  30/10/1998
+  - better method to check if another copy of the bot is already running
+  - commands: !join, !part
+  - better memory management in words
+
+1.4  --  12/10/1998
+  - code optimization and reorganization
+  - commands: !rosa, !invite, !publico, !opme, !setuserpass/msg/level,
+    !away, !nick, !nickserv
+  - use of complete masks in the user system
+  - configuration through a file
+  - support for several simultaneous servers (with still much to do)
+  - recognize and answer to CTCP's (version, finger, userinfo, ping, time,
+    source, echo and clientinfo)
+  - better use of the command line parameters
+  - better look of irc messages
+  - doesn't exit with the signals SIGTERM and SIGHUP
+
+1.3  --  16/09/1998
+  - conversion to c++, use of classes
+  - total remodelation of the program
+  - commands: !ojogo, !level, !time
+  - identify when the nickserv restarts
+  - manage nick/chanserv's presence
+
+1.2  --  26/07/1998
+  - bug in chanserv unban fixed
+  - flood protection in channels
+  - new method of channel organization
+  - total recognition of user modes
+
+1.1  --  18/07/1998
+  - commands: !status, !setmsg
+  - can change shitlisted's kick msg, and auto-greets
+  - auto-op on deop for the bot
+  - bug in nick's size fixed
+
+1.0  --  09/07/1998
+  - commands: !setpass, !userlist, !adduser, !deluser
+  - filesystem for users and words
+  - users with -1 are ban/kicked when joining a channel (shitlist)
+
+0.9  --  25/06/1998
+  - commands: !op, !deop, !voice, !devoice, !ban, !unban, !kick, !diz, !pass,
+    !work, !baza, ??, !learn, !help
+  - userlist and words still in the source
+  - password and user level
+  - use chanserv unban/invite when necessary
+  - auto greet and op to the registered when joining a channel
+  - protection from the bot's own commands
+  - help for every command
+
+0.0  --  31/05/1998
+  - start! :)
+  - just connect, join a channel, answer server pings and has auto-join

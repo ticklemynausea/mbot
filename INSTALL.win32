@@ -1,0 +1,27 @@
+
+These are instructions to compile and run mbot under Windows. Please check the
+README and INSTALL for further info.
+
+First of all, keep in mind that mbot was made in and to unix environments.
+This "port" is a bit messy, with some features missing. Still, it's better
+than nothing. :)
+
+Currently I only have a workspace for Microsoft Visual C++ 6 in subdirectory
+vc/, I don't know how it behaves with other versions. Just select all projects
+and build away. If any problem arises when compiling, please contact me so I
+can fix it. (Yes, I know, there are 3 warnings in CNetServer.cpp but I
+couldn't work around them... all tested unix-likes don't complain, btw.)
+Support for Borland compilers may be on its way, depends of when I get the
+time/patience for it.
+
+Special care must be taken when editing mbot's files, particularly
+example.users (or whatever you called it). mbot expects this and other files
+to be in unix text format, that is, with a line feed (LF) separating
+each line, unlike Window's CR/LF. So you must use an editor that is aware of
+this, such as textpad (not wordpad, nor VC++'s IDE, nor MS-DOS's edit, etc).
+If none of this makes sense to you, you're gonna be in trouble. :)
+
+Another thing to note is that example.conf is loading modules with the
+extension ".so", which is standard in unixes for shared objects. You must
+change that to ".dll", because that's what VC++ will create.
+

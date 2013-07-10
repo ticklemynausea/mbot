@@ -59,7 +59,7 @@ using namespace std;
 // /!\ INCLUDING CERTAIN CHARACTERS HERE WILL ALLOW /!\
 // /!\ ARBITRARY SHELL COMMANDS TO BE EXECUTED      /!\ 
 
-#define VALID_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-.@!"
+#define VALID_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-.@!ÁáÀàÃãÂâÉéÈèÊêÍíÌìÎîÓóÒòÕõÔôÚúÙùÛûÇç"
 
 // /!\ CAUTION WITH THE LINE ABOVE. ACHTUNG!        /!\ 
 

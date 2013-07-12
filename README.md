@@ -1,4 +1,6 @@
 mbot
-====
+mirage's IRC bot 2013
+=====================
 
-Fork of mirage's IRC bot
+original sources availble at http://darksun.com.pt/mbot/
+

@@ -48,6 +48,14 @@ Net::writeln (const char *format, ...)
   size_t len = strlen (bufwrite);
   if (len > 500)		// ptnet *ignores* lines with 500+ chars
     len = 500;
+
+  /* 1337 1xpl01d f1x */
+  for (size_t i = 0; i < len; i++) {
+    if (bufwrite[i] == 0x0A || bufwrite[i] == 0x0D) {
+      bufwrite[i] = 0x20;
+    }
+  }
+
   bytesout += len + 2;		// +2 because a '\r\n' will be appended
   my_strncpy (bufwrite+len, "\r\n", 3);
   send (sock, bufwrite, len+2, 0);

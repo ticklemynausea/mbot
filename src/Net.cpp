@@ -139,11 +139,9 @@ Net::create_tcp (int port, c_char vhost, bool block)
 #ifdef ENABLE_IPV6
       if (a.inet == AF_INET6)
         result = bind (sock, (struct sockaddr *) &a.sa6, sizeof (a.sa6));
-      else {
+      else
 #endif
-        cout << "about to bind em baixo" << endl;
         result = bind (sock, (struct sockaddr *) &a.sa, sizeof (a.sa));
-      }
 
       if (result == -1)
         {

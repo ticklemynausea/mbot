@@ -121,14 +121,17 @@ bool
 Net::create_tcp (int port, c_char vhost, bool block)
 {
   sock = socket (addr.inet, SOCK_STREAM, IPPROTO_TCP);
-  if (sock == -1)
+  if (sock == -1) {
+    cout << "failed socket()" << endl;
     return 0;
+  }
   if (vhost != NULL)
     {
       struct addr_type a;
       if (!resolvehost (vhost, &a, addr.inet))
         {
           close (sock);
+          cout << "failed resolvehost()" << endl;
           return 0;
         }
 
@@ -136,13 +139,16 @@ Net::create_tcp (int port, c_char vhost, bool block)
 #ifdef ENABLE_IPV6
       if (a.inet == AF_INET6)
         result = bind (sock, (struct sockaddr *) &a.sa6, sizeof (a.sa6));
-      else
+      else {
 #endif
+        cout << "about to bind em baixo" << endl;
         result = bind (sock, (struct sockaddr *) &a.sa, sizeof (a.sa));
+      }
 
       if (result == -1)
         {
           close (sock);
+            cout << "failed bind()" << endl;
           return 0;
         }
     }
@@ -361,6 +367,7 @@ contain this leak, so you can use --disable-ipv6 if it really bothers you.
               a->inet = AF_INET6;
               in6 = (struct sockaddr_in6 *) result->ai_addr;
               memcpy (&a->sa6.sin6_addr, &in6->sin6_addr, sizeof (struct in6_addr));
+              a->sa.sin_family = AF_INET6; //thx Theorem
               ret = 1;
               break;
             }
@@ -369,6 +376,7 @@ contain this leak, so you can use --disable-ipv6 if it really bothers you.
               a->inet = AF_INET;
               in = (struct sockaddr_in *) result->ai_addr;
               memcpy (&a->sa.sin_addr, &in->sin_addr, sizeof (struct in_addr));
+              a->sa.sin_family = AF_INET; //thx Theorem
               ret = 1;
               break;
             }

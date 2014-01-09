@@ -42,7 +42,7 @@ using namespace std;
 #define TRIGGER_SIZE 64
 #define COMMAND_SIZE 256
 #define RESULT_LINE_SIZE 1024
-#define RESULT_LINE_MAX 25
+#define RESULT_LINE_MAX 100
 #define FLAGS_START 1
 
 #define SOURCE s->script.source
@@ -59,7 +59,7 @@ using namespace std;
 // /!\ INCLUDING CERTAIN CHARACTERS HERE WILL ALLOW /!\
 // /!\ ARBITRARY SHELL COMMANDS TO BE EXECUTED      /!\ 
 
-#define VALID_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-.@!ÁáÀàÃãÂâÉéÈèÊêÍíÌìÎîÓóÒòÕõÔôÚúÙùÛûÇç"
+#define VALID_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-.:/@!#ÁáÀàÃãÂâÉéÈèÊêÍíÌìÎîÓóÒòÕõÔôÚúÙùÛûÇç"
 
 // /!\ CAUTION WITH THE LINE ABOVE. ACHTUNG!        /!\ 
 

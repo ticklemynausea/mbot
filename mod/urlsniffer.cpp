@@ -62,12 +62,14 @@ struct sniffing_channel_type {
   bool tellall; // sniff all links or just text/html
   bool tellfail; // message on fail?
   bool tellold; // tell if the url was already seen by the channel
+  bool tellprntscr; // tell if the url was already seen by the channel
 
-  sniffing_channel_type(String* s, bool th, bool tf, bool to) : 
+  sniffing_channel_type(String* s, bool th, bool tf, bool to, bool tp) : 
     channel (s), 
     tellall (th),
     tellfail (tf),
-    tellold (to) {}
+    tellold (to),
+    tellprntscr (tp) {}
     
   ~sniffing_channel_type() {
     delete channel;
@@ -106,6 +108,7 @@ struct urlsniffer_type {
   bool telling_fail_on_channel(c_char channel);
   bool telling_all_on_channel(c_char channel);
   bool telling_old_on_channel(c_char channel);
+  bool telling_prntscr_on_channel(c_char channel);
   time_t how_old_url(string url, string channel, string newnick, string& orignick);
   int save_urls_to_file();
   int load_urls_from_file();
@@ -295,6 +298,18 @@ bool urlsniffer_type::telling_old_on_channel(c_char channel) {
   {
     if (*(s->channel) == channel)
       return s->tellold;
+  }
+  return false;
+}
+
+bool urlsniffer_type::telling_prntscr_on_channel(c_char channel) {
+  
+  sniffing_channel_type *s;
+  this->channels->rewind ();
+  while ((s = (sniffing_channel_type *)this->channels->next()) != NULL)
+  {
+    if (*(s->channel) == channel)
+      return s->tellprntscr;
   }
   return false;
 }
@@ -521,6 +536,10 @@ urlsniffer_event (NetServer *s)
        } else {
          oss << ", " << e.response_content_length << " bytes)";
        }
+
+       if (e.prntscr_url != "" && urlsniffer->telling_prntscr_on_channel(CMD[2])) {
+         oss << " (image: " << e.prntscr_url << ")";
+       }
     } else {
       oss << nick << "'s link sucks. (" << e.error_message << ")";
     }
@@ -588,7 +607,8 @@ urlsniffer_conf (NetServer *s, c_char bufread)
     new String(buf[1], CHANNEL_SIZE),
     (strncmp(buf[2], "tellall", 7) == 0),
     (strncmp(buf[3], "tellfail", 8) == 0),
-    (strncmp(buf[4], "tellold", 7) == 0)
+    (strncmp(buf[4], "tellold", 7) == 0),
+    (strncmp(buf[4], "tellprntscr", 11) == 0)
   ));
 }
 

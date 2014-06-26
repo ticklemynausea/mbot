@@ -579,8 +579,8 @@ static void
 urlsniffer_conf (NetServer *s, c_char bufread)
 {
 
-  char buf[5][MSG_SIZE+1];
-  strsplit (bufread, buf, 4);
+  char buf[6][MSG_SIZE+1];
+  strsplit (bufread, buf, 5);
  
   if (strcasecmp (buf[0], "urlsniffer") != 0)
     return;

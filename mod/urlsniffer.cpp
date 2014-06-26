@@ -608,7 +608,7 @@ urlsniffer_conf (NetServer *s, c_char bufread)
     (strncmp(buf[2], "tellall", 7) == 0),
     (strncmp(buf[3], "tellfail", 8) == 0),
     (strncmp(buf[4], "tellold", 7) == 0),
-    (strncmp(buf[4], "tellprntscr", 11) == 0)
+    (strncmp(buf[5], "tellprntscr", 11) == 0)
   ));
 }
 

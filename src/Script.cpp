@@ -672,7 +672,7 @@ Script::event_privmsg (void)
         s->irc_notice (dest, "\001FINGER %s\001", (c_char)ctcp_finger);
       else if (strcmp (CMD[3], "\001USERINFO\001") == 0)
         s->irc_notice (dest, "\001USERINFO %s running on %s (%d bits)\001", VERSION_STRING, HOST, 8*sizeof (int *));
-      else if (strncmp (CMD[3], "\001PING ", 6) == 0)
+      else if ((strncmp (CMD[3], "\001PING ", 6) == 0) || (strcmp (CMD[3], "\001PING\001") == 0))
         s->irc_notice (dest, CMD[3]);
       else if (strcmp (CMD[3], "\001TIME\001") == 0)
         s->irc_notice (dest, "\001TIME %s\001", get_asctime (s->time_now, buf[2], MSG_SIZE));

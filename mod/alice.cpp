@@ -1568,7 +1568,7 @@ alice_event (NetServer *s)
     return;
 
   // if it's a channel
-  if (CMD[2][0] == '#')
+  if ((CMD[2][0] == '#') || ((CMD[2][0] == '@') && (CMD[2][1] == '#')))
     {
       if (strncasecmp (CMD[3], s->nick, s->nick.getlen ()) == 0)
         {

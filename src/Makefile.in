@@ -20,7 +20,7 @@ OBJS = mbot.o missing.o scriptcmd.o utils.o Bot.o Channel.o \
 	$(CXX) $(CXXFLAGS) -I$(INCLUDE) $< -c
 
 mbot:	$(OBJS)
-	$(CXX) -s $(LDFLAGS) $(LIBS) $(OBJS) -o $(BIN)
+	$(CXX) -s $(LDFLAGS) $(OBJS) -o $(BIN) $(LIBS)
 
 static: $(OBJS)
 	$(CXX) -s $(LDFLAGS) -static $(LIBS) $(OBJS) -o $(BIN)

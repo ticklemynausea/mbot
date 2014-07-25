@@ -9,7 +9,7 @@ LIBS = @LIBS@
 .SUFFIXES:
 .SUFFIXES: .cpp .so
 
-all: urlsniffer shell.so alice.so calc.so chanstat.so extra.so flood.so getnick.so invite.so \
+all: urlsniffer shell alice.so calc.so chanstat.so extra.so flood.so getnick.so invite.so \
 	ircop.so joinmsg.so log.so seen.so @TCL@ watch.so @WEB@ whois.so \
 	word.so
 
@@ -27,3 +27,6 @@ web:
 
 urlsniffer:
 	$(CXX) $(CXXFLAGS) -I$(INCLUDE) -leasycurl urlsniffer.cpp $(LDFLAGS) -o urlsniffer.so
+
+shell:
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE) -L/usr/local/lib -lpthread -lpopennoshell shell.cpp $(LDFLAGS) -o shell.so

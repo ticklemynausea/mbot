@@ -20,6 +20,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "mbot.h"
 
+#include <popen-noshell.h>
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -40,7 +42,8 @@ using namespace std;
 #define TIMESTR_SIZE 10
 #define FIELD_SIZE (NICK_SIZE+TIMESTR_SIZE+1)
 #define TRIGGER_SIZE 64
-#define COMMAND_SIZE 256
+#define COMMAND_SIZE 1024
+#define ARGS_SIZE 256
 #define RESULT_LINE_SIZE 1024
 #define RESULT_LINE_MAX 100
 #define FLAGS_START 1
@@ -66,6 +69,8 @@ using namespace std;
 //The characters you want tabs replaced with.
 #define TAB_CHAR "  "
 
+extern FILE* popen_noshell(char * const command[], const char *mode);
+extern int pclose_noshell(FILE *file);
 
 // utils 
 
@@ -141,24 +146,28 @@ struct timer_type {
 };
 
 // execute
-void execute_command(char* cmdline, char* destination, NetServer* s) {
+void execute_command(char* command[], char* destination, NetServer* s) {
   int lines_sent = 0;
   char buffer[RESULT_LINE_SIZE];
   FILE* p;
-  
-  if ((p = popen(cmdline, "r")) == NULL) {
-  
-    SEND_TEXT(destination, "OMG HELP ME! SOMETHING IS WRONG WITH %s13%s %s\x03!!!", 
-      "\x03", destination, cmdline);
+  cout << "stuff " << endl;
+  for (unsigned int i = 0; command[i] != NULL; i++) {
+    cout << "command " << i << " '" << command[i] << "'" <<endl;
+  }
+  if ((p = popen_noshell(command, "r")) == NULL) {
+    cout << "stuff 1.1" << endl;
+    SEND_TEXT(destination, "OMG HELP ME! SOMETHING IS WRONG WITH POOPEN!!!");
     return;
     
   }
-  
+  cout << "100" << endl;
   while(!feof(p)) {
-
+    cout << "not feof" << endl;
     if (fgets(buffer, RESULT_LINE_SIZE, p) == NULL) {
       break;
     }
+
+    cout << "buffer: " << buffer << endl;
     
     if (lines_sent >= RESULT_LINE_MAX) {
       SEND_TEXT(destination, "%scommand muted at %d lines.\x02", 
@@ -173,8 +182,16 @@ void execute_command(char* cmdline, char* destination, NetServer* s) {
     SEND_TEXT(destination, "%s", temp.c_str());
     lines_sent++;
   }
+  cout << "101" << endl;
+  pclose_noshell(p);
+
+  // free argv buffers
+  for (unsigned int i = 0; command[i] != NULL; i++) {
+    cout << "freeing " << command[i] << endl;
+    free(command[i]);
+  }
+
   
-  pclose(p);
 }
 
 void* wait_thread(void* arg) {
@@ -183,8 +200,9 @@ void* wait_thread(void* arg) {
 
   while (me->alive) {
     sleep(me->interval);
-    execute_command(me->command->getstr(), me->destination->getstr(), 
-      me->server);
+  // /!\
+  //  execute_command(me->command->getstr(), me->destination->getstr(), 
+  //      me->server);
   }
 }
 
@@ -259,41 +277,43 @@ EXPORT struct Module::module_type module = {
 
 }
 
-// builds the shell command based on user input
+// builds the command based on user input
 // if the return value is false, buffer contains
 // an error message
 
 // this method prevents command injection via shell processing
-// by restricting the set of characters allowed in (specified in 
-// VALID_CHARS) and by quoting each separate argument with a '
-bool parse_command(char* buffer, command_type* command, char* mask, char* params) {
+// by using an alternative version of popen which skips the usage
+// of /bin/sh to parse the given command, using execv instead of execl
 
-  string mask_s(mask), params_s(params), params_s2 = "", command_s(command->command->getstr());
 
-  //Remove almost everything from PARAMS
-  
-  // the lines below are quite important, for security purposes
-  mask_s.erase(remove_if(mask_s.begin(), mask_s.end(), is_invalid_char), mask_s.end());
-  params_s.erase(remove_if(params_s.begin(), params_s.end(), is_invalid_char), params_s.end());
-   
-  // quote everything!
-  
-  mask_s = "'" + mask_s + "'";
-  
-  istringstream iss(params_s);
-  string token, result;
+bool parse_command(char *command_out[], command_type* command, char* mask, char* params) {
 
-  while (iss >> token) {
-    token = "'" + token + "'";
-    result += token + " ";
-  }
-  params_s = result.substr(0, result.size()-1);
-  
+  // c++ strings for processing this crap
+  string mask_s(mask), params_s(params), command_s(command->command->getstr()); 
+  cout << "command:" << command_s << endl;
+  cout << "mask_s:" << mask_s << endl;
+  cout << "params_s:" << params_s << endl;
+  // replace
   replace(command_s, "{n}", mask_s);
   replace(command_s, "{}", params_s);
+
+  // put first token in a char pointer 
+  istringstream iss(command_s);
+  cout << "command:" << command_s << endl;
+
+  // make a list of pointers for execv from the given char pointer
   
-  strncpy(buffer, command_s.c_str(), COMMAND_SIZE);
+  string token;
+  unsigned int i;
+  for (i = 0; iss >> token; i++) {
+    command_out[i] = (char*)malloc(COMMAND_SIZE);
+    strncpy(command_out[i], token.c_str(), token.length());
+  }
+  cout << "3" << endl;
+  // NULL termination for execv
   
+  command_out[i] = NULL;
+  cout << "4" << endl;
   return true;
 }
 
@@ -354,12 +374,17 @@ static void shell_cmd (NetServer *s)
     }
 
     // get a command line string, safe for execution
-    char cmdline[COMMAND_SIZE];
-    if (!parse_command(cmdline, command, CMD[0], BUF[1])) {
-      SEND_TEXT(DEST, cmdline); //in this case cmdline will contain an error msg
-    }
+    char *command_execv[ARGS_SIZE];
 
-    execute_command(cmdline, DEST, s);
+    if (parse_command(command_execv, command, CMD[0], BUF[1])) {
+      cout << "meeseeks " << command_execv << endl;
+      
+      for (unsigned int i = 0; command_execv[i] != NULL; i++) {
+        cout << "command " << i << " '" << command_execv[i] << "'" << endl;
+      }
+      execute_command(command_execv, DEST, s); 
+      cout << "ZZZ:" << command_execv << endl;  
+    }
 
   }
 }

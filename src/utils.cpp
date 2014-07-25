@@ -397,7 +397,7 @@ my_strncpy (char *dest, c_char src, size_t n)
   size_t i = strlen (src);
   if (i > n)
     i = n;
-  memcpy (dest, src, i);
+  memove (dest, src, i);
   dest[i] = 0;
   return dest;
 }

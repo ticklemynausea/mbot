@@ -305,10 +305,14 @@ bool parse_command(char *command_out[], command_type* command, char* mask, char*
   
   string token;
   unsigned int i;
+  size_t t_len;
   for (i = 0; iss >> token; i++) {
+    t_len = token.length();
     command_out[i] = (char*)malloc(COMMAND_SIZE);
-    strncpy(command_out[i], token.c_str(), token.length());
+    strncpy(command_out[i], token.c_str(), t_len);
+    command_out[i][t_len] = 0 ;
   }
+
   cout << "3" << endl;
   // NULL termination for execv
   

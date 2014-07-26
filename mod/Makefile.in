@@ -26,7 +26,7 @@ web:
 	@MOD_MAKE_WEB@
 
 urlsniffer:
-	$(CXX) $(CXXFLAGS) -I$(INCLUDE) $(LDFLAGS) urlsniffer.cpp -o urlsniffer.so -leasycurl
+	$(CXX) $(CXXFLAGS) `pkg-config --cflags libeasycurl` -I$(INCLUDE) $(LDFLAGS) urlsniffer.cpp -o urlsniffer.so `pkg-config --libs libeasycurl`
 
 shell:
-	$(CXX) $(CXXFLAGS) -I$(INCLUDE) $(LDFLAGS) shell.cpp -o shell.so -lpthread -lpopennoshell
+	$(CXX) $(CXXFLAGS) `pkg-config --cflags libpopennoshell` -I$(INCLUDE) $(LDFLAGS) shell.cpp -o shell.so -lpthread `pkg-config --libs libpopennoshell`

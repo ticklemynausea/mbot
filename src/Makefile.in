@@ -1,6 +1,6 @@
 CXX = @CXX@
 CXXFLAGS = @SRC_CXXFLAGS@
-LDFLAGS = @LDFLAGS@ @SRC_LDFLAGS@ @TCL_LIBS@ @XML_LIBS@
+LDFLAGS = @LDFLAGS@ @SRC_LDFLAGS@ @TCL_LIBS@ @XML_LIBS@ 
 INCLUDE = @top_srcdir@/inc
 BIN = @top_srcdir@/@PACKAGE@
 LIBS = @LIBS@
@@ -23,8 +23,8 @@ mbot:	$(OBJS)
 	$(CXX) -s $(LDFLAGS) $(OBJS) -o $(BIN) $(LIBS)
 
 static: $(OBJS)
-	$(CXX) -s $(LDFLAGS) -static $(LIBS) $(OBJS) -o $(BIN)
+	$(CXX) -s $(LDFLAGS) -static $(OBJS) -o $(BIN) $(LIBS)
 
 debug:  $(OBJS)
-	$(CXX) $(LDFLAGS) $(LIBS) $(OBJS) -o $(BIN)
+	$(CXX) $(LDFLAGS) $(OBJS) -o $(BIN) $(LIBS)
 

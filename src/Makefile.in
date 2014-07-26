@@ -1,6 +1,6 @@
 CXX = @CXX@
 CXXFLAGS = @SRC_CXXFLAGS@
-LDFLAGS = -Wl,--no-as-needed @LDFLAGS@ @SRC_LDFLAGS@ @TCL_LIBS@ @XML_LIBS@ 
+LDFLAGS = @LDFLAGS@ @SRC_LDFLAGS@ @TCL_LIBS@ @XML_LIBS@ 
 INCLUDE = @top_srcdir@/inc
 BIN = @top_srcdir@/@PACKAGE@
 LIBS = @LIBS@

@@ -43,7 +43,7 @@ using namespace std;
 #define FIELD_SIZE (NICK_SIZE+TIMESTR_SIZE+1)
 #define TRIGGER_SIZE 64
 #define COMMAND_SIZE 1024
-#define ARGS_SIZE 256
+#define ARGS_SIZE 512
 #define RESULT_LINE_SIZE 1024
 #define RESULT_LINE_MAX 100
 #define FLAGS_START 1
@@ -58,43 +58,23 @@ using namespace std;
 #define RESPONSE_USERNOT 2
 #define RESPONSE_CHANNOT 3
 
-// /!\ ACHTUNG! CAUTION WITH THE LINE BELOW         /!\
-// /!\ INCLUDING CERTAIN CHARACTERS HERE WILL ALLOW /!\
-// /!\ ARBITRARY SHELL COMMANDS TO BE EXECUTED      /!\ 
-
-#define VALID_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-.:/@!#ÁáÀàÃãÂâÉéÈèÊêÍíÌìÎîÓóÒòÕõÔôÚúÙùÛûÇç"
-
-// /!\ CAUTION WITH THE LINE ABOVE. ACHTUNG!        /!\ 
-
 //The characters you want tabs replaced with.
 #define TAB_CHAR "  "
 
 extern FILE* popen_noshell(char * const command[], const char *mode);
 extern int pclose_noshell(FILE *file);
 
-// utils 
-
-// for use with replace_if
-
-bool is_invalid_char(char c) {
-  char list[] = VALID_CHARS;
-  int len = sizeof(list)/sizeof(list[1]);
-  
-  for (int i = 0; i < len; i++) {
-    if (list[i] == c)
-      return false;
-  }
-  return true;
-}
+bool parse_command(char *command_out[], char *command);
+void execute_command(char* command[], char* destination, NetServer* s);
 
 // http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string
 
 bool replace(std::string& str, const std::string& from, const std::string& to) {
-    size_t start_pos = str.find(from);
-    if(start_pos == std::string::npos)
-        return false;
-    str.replace(start_pos, from.length(), to);
-    return true;
+  size_t start_pos = str.find(from);
+  if(start_pos == std::string::npos)
+    return false;
+  str.replace(start_pos, from.length(), to);
+  return true;
 }
 
 struct command_type {
@@ -145,64 +125,16 @@ struct timer_type {
   
 };
 
-// execute
-void execute_command(char* command[], char* destination, NetServer* s) {
-  int lines_sent = 0;
-  char buffer[RESULT_LINE_SIZE];
-  FILE* p;
-  cout << "stuff " << endl;
-  for (unsigned int i = 0; command[i] != NULL; i++) {
-    cout << "command " << i << " '" << command[i] << "'" <<endl;
-  }
-  if ((p = popen_noshell(command, "r")) == NULL) {
-    cout << "stuff 1.1" << endl;
-    SEND_TEXT(destination, "OMG HELP ME! SOMETHING IS WRONG WITH POOPEN!!!");
-    return;
-    
-  }
-  cout << "100" << endl;
-  while(!feof(p)) {
-    cout << "not feof" << endl;
-    if (fgets(buffer, RESULT_LINE_SIZE, p) == NULL) {
-      break;
-    }
-
-    cout << "buffer: " << buffer << endl;
-    
-    if (lines_sent >= RESULT_LINE_MAX) {
-      SEND_TEXT(destination, "%scommand muted at %d lines.\x02", 
-        "\x02", RESULT_LINE_MAX);
-      break;
-    }
-    
-    string temp(buffer);
-    while (temp.find("\t") != string::npos)
-      replace(temp, "\t", TAB_CHAR);
-
-    SEND_TEXT(destination, "%s", temp.c_str());
-    lines_sent++;
-  }
-  cout << "101" << endl;
-  pclose_noshell(p);
-
-  // free argv buffers
-  for (unsigned int i = 0; command[i] != NULL; i++) {
-    cout << "freeing " << command[i] << endl;
-    free(command[i]);
-  }
-
-  
-}
-
 void* wait_thread(void* arg) {
   
   timer_type* me = (timer_type*)arg;
-
+  char *command_execv[ARGS_SIZE];
+  
   while (me->alive) {
     sleep(me->interval);
-  // /!\
-  //  execute_command(me->command->getstr(), me->destination->getstr(), 
-  //      me->server);
+    if (parse_command(command_execv, me->command->getstr())) {
+      execute_command(command_execv, me->destination->getstr(), me->server); 
+    }
   }
 }
 
@@ -277,50 +209,6 @@ EXPORT struct Module::module_type module = {
 
 }
 
-// builds the command based on user input
-// if the return value is false, buffer contains
-// an error message
-
-// this method prevents command injection via shell processing
-// by using an alternative version of popen which skips the usage
-// of /bin/sh to parse the given command, using execv instead of execl
-
-
-bool parse_command(char *command_out[], command_type* command, char* mask, char* params) {
-
-  // c++ strings for processing this crap
-  string mask_s(mask), params_s(params), command_s(command->command->getstr()); 
-  cout << "command:" << command_s << endl;
-  cout << "mask_s:" << mask_s << endl;
-  cout << "params_s:" << params_s << endl;
-  // replace
-  replace(command_s, "{n}", mask_s);
-  replace(command_s, "{}", params_s);
-
-  // put first token in a char pointer 
-  istringstream iss(command_s);
-  cout << "command:" << command_s << endl;
-
-  // make a list of pointers for execv from the given char pointer
-  
-  string token;
-  unsigned int i;
-  size_t t_len;
-  for (i = 0; iss >> token; i++) {
-    t_len = token.length();
-    command_out[i] = (char*)malloc(COMMAND_SIZE);
-    strncpy(command_out[i], token.c_str(), t_len);
-    command_out[i][t_len] = 0 ;
-  }
-
-  cout << "3" << endl;
-  // NULL termination for execv
-  
-  command_out[i] = NULL;
-  cout << "4" << endl;
-  return true;
-}
-
 //returns the command for a given trigger
 command_type* trigger2command(char* trigger, List* command_list) {
   command_type *command;
@@ -337,6 +225,106 @@ command_type* trigger2command(char* trigger, List* command_list) {
     }
   }
   return NULL;
+}
+// builds the command based on user input
+// if the return value is false, buffer contains
+// an error message
+
+// this method prevents command injection via shell processing
+// by using an alternative version of popen which skips the usage
+// of /bin/sh to parse the given command, using execv instead of execl
+
+
+bool parse_command(char *command_out[], command_type* command, char* mask, char* params) {
+
+  // c++ strings for processing this crap
+  string mask_s(mask), params_s(params), command_s(command->command->getstr()); 
+  
+  // replace
+  replace(command_s, "{n}", mask_s);
+  replace(command_s, "{}", params_s);
+
+  // put first token in a char pointer 
+  istringstream iss(command_s);
+
+  // make a list of pointers for execv from the given char pointer
+  
+  string token;
+  unsigned int i;
+  size_t t_len;
+  for (i = 0; iss >> token; i++) {
+    t_len = token.length();
+    command_out[i] = (char*)malloc(COMMAND_SIZE);
+    strncpy(command_out[i], token.c_str(), t_len);
+    command_out[i][t_len] = 0 ;
+  }
+
+  // NULL termination for execv
+  command_out[i] = NULL;
+  return true;
+}
+
+bool parse_command(char *command_out[], char *command) {
+
+  // c++ strings for processing this crap
+  string command_s(command); 
+
+  // put first token in a char pointer 
+  istringstream iss(command_s);
+
+  // make a list of pointers for execv from the given char pointer
+  
+  string token;
+  unsigned int i;
+  size_t t_len;
+  for (i = 0; iss >> token; i++) {
+    t_len = token.length();
+    command_out[i] = (char*)malloc(COMMAND_SIZE);
+    strncpy(command_out[i], token.c_str(), t_len);
+    command_out[i][t_len] = 0 ;
+  }
+
+  // NULL termination for execv
+  command_out[i] = NULL;
+  return true;
+}
+
+// execute
+void execute_command(char* command[], char* destination, NetServer* s) {
+  int lines_sent = 0;
+  char buffer[RESULT_LINE_SIZE];
+  FILE* p;
+  
+  if ((p = popen_noshell(command, "r")) == NULL) {
+    SEND_TEXT(destination, "OMG HELP ME! SOMETHING IS WRONG WITH POOPEN!!!");
+    return;
+    
+  }
+  
+  while(!feof(p)) {
+    if (fgets(buffer, RESULT_LINE_SIZE, p) == NULL) {
+      break;
+    }
+
+    if (lines_sent >= RESULT_LINE_MAX) {
+      SEND_TEXT(destination, "%scommand muted at %d lines.\x02", 
+        "\x02", RESULT_LINE_MAX);
+      break;
+    }
+    
+    string temp(buffer);
+    while (temp.find("\t") != string::npos)
+      replace(temp, "\t", TAB_CHAR);
+
+    SEND_TEXT(destination, "%s", temp.c_str());
+    lines_sent++;
+  }
+  pclose_noshell(p);
+
+  // free argv buffers
+  for (unsigned int i = 0; command[i] != NULL; i++) {
+    free(command[i]);
+  }
 }
 
 /////////////
@@ -377,17 +365,10 @@ static void shell_cmd (NetServer *s)
       return;
     }
 
-    // get a command line string, safe for execution
+    // get a command line string
     char *command_execv[ARGS_SIZE];
-
     if (parse_command(command_execv, command, CMD[0], BUF[1])) {
-      cout << "meeseeks " << command_execv << endl;
-      
-      for (unsigned int i = 0; command_execv[i] != NULL; i++) {
-        cout << "command " << i << " '" << command_execv[i] << "'" << endl;
-      }
       execute_command(command_execv, DEST, s); 
-      cout << "ZZZ:" << command_execv << endl;  
     }
 
   }

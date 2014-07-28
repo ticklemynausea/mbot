@@ -48,7 +48,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define TIME_BUFFER_SIZE 80
 
 // used to prevent nick highlights
-#define BLOCK_CHAR "\x030\x03"
+#define BLOCK_STR ("\x3" "0" "\x3")
 
 // number of seconds it takes before an old url is announced to the channel as old
 #define TIMEIN_OLD 0
@@ -507,8 +507,8 @@ urlsniffer_event (NetServer *s)
           
           char buffer[TIME_BUFFER_SIZE];
           unixtime2human2(buffer, age);
-          //nick.insert(1, BLOCK_CHAR); //kept commented to nag the nick on purpose
-          orignick.insert(1, BLOCK_CHAR);
+          //nick.insert(1, BLOCK_STR); // keep commented to nag the nick on purpose
+          orignick.insert(1, BLOCK_STR);
           SEND_TEXT(DEST, "BAH! %s's link is OLD! (shown %s by %s)", nick.c_str(), buffer, orignick.c_str());
           
           continue;
@@ -519,7 +519,7 @@ urlsniffer_event (NetServer *s)
     }
 
     //prevent highlights
-    nick.insert(1, BLOCK_CHAR);
+    nick.insert(1, BLOCK_STR);
     
     EasyCurl e(url);
     if (e.requestWentOk == 1) {

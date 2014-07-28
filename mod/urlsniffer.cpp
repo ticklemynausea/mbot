@@ -48,10 +48,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define TIME_BUFFER_SIZE 80
 
 // used to prevent nick highlights
-#define BLOCK_CHAR ""
-
-// file to store the url database
-#define URL_FILE "urlsniffer.list"
+#define BLOCK_CHAR "\x0030\x003"
 
 // number of seconds it takes before an old url is announced to the channel as old
 #define TIMEIN_OLD 0
@@ -103,12 +100,14 @@ struct urlsniffer_type {
   NetServer *s;
   List* channels;
   vector<url_type> urls_seen;
+  String* save_file;
 
   bool sniffing_channel(c_char channel);
   bool telling_fail_on_channel(c_char channel);
   bool telling_all_on_channel(c_char channel);
   bool telling_old_on_channel(c_char channel);
   bool telling_prntscr_on_channel(c_char channel);
+
   time_t how_old_url(string url, string channel, string newnick, string& orignick);
   int save_urls_to_file();
   int load_urls_from_file();
@@ -117,6 +116,7 @@ struct urlsniffer_type {
   
   ~urlsniffer_type () {
     delete channels;
+    delete save_file;
   }
 };
 
@@ -316,7 +316,12 @@ bool urlsniffer_type::telling_prntscr_on_channel(c_char channel) {
 
 int urlsniffer_type::save_urls_to_file() {
   ofstream f;
-  f.open(URL_FILE, fstream::trunc);
+  f.open(this->save_file->getstr(), fstream::trunc);
+  if (f.fail()) {
+    cerr << "Error saving urls to " << this->save_file->getstr() << "!" << endl;
+    return 0;
+  }
+  
   int i = 0;
   for (vector<url_type>::iterator it = this->urls_seen.begin() ; it != urls_seen.end(); ++it) {
     f << it->timestamp << " " << it->nick << " " << it->channel << " " << it->url << endl;
@@ -330,7 +335,7 @@ int urlsniffer_type::save_urls_to_file() {
 int urlsniffer_type::load_urls_from_file() {
   
   ifstream f;
-  f.open(URL_FILE);
+  f.open(this->save_file->getstr());
   string timestamp, nick, channel, url;
   int i = 0;
 
@@ -432,11 +437,7 @@ urlsniffer_staturls_cmd (NetServer *s)
     unixtime2human(buffer, url.timestamp);
     SEND_TEXT(DEST, "%d/%d: at %s on %s by %s: %s", n, len, buffer, url.channel.c_str(), url.nick.c_str(), url.url.c_str());
   }
-  
-  
-  /*for (vector<url_type>::iterator it = urlsniffer->urls_seen.begin() ; it != urlsniffer->urls_seen.end(); ++it) {
-    SEND_TEXT(DEST, "%ld %s %s %s", it->timestamp, it->nick.c_str(), it->channel.c_str(), it->url.c_str());
-  }*/
+
 }
 
 /////////////////////
@@ -579,37 +580,54 @@ static void
 urlsniffer_conf (NetServer *s, c_char bufread)
 {
 
-  char buf[6][MSG_SIZE+1];
-  strsplit (bufread, buf, 5);
- 
-  if (strcasecmp (buf[0], "urlsniffer") != 0)
-    return;
-  
-  //verificar se ja foi inicializado!
   urlsniffer_type *urlsniffer = server2urlsniffer(s);
-  if (urlsniffer == NULL) {
-    urlsniffer = new urlsniffer_type (s);
-    if (urlsniffer == NULL)
-      s->b->conf_error ("error initializing urlsniffer");
-	    urlsniffer_list->add ((void *)urlsniffer);
-	    urlsniffer->channels = new List();
-	    s->script.events.add ((void *)urlsniffer_event);
-
-	    s->script.cmd_bind (urlsniffer_saveurls_cmd, CMD_LEVEL, CMD_SAVE_TRIGGER, module.mod, HELP_save);	  
-	    s->script.cmd_bind (urlsniffer_loadurls_cmd, CMD_LEVEL, CMD_LOAD_TRIGGER, module.mod, HELP_load);
-	    s->script.cmd_bind (urlsniffer_staturls_cmd, CMD_LEVEL, CMD_STAT_TRIGGER, module.mod, HELP_load);
-	    
-    int result = urlsniffer->load_urls_from_file();
-    cout <<   "  URLsniffer: Loaded " << result << " URLs from file" << endl;
-  }
   
-  urlsniffer->channels->add ((void *) new sniffing_channel_type(
-    new String(buf[1], CHANNEL_SIZE),
-    (strncmp(buf[2], "tellall", 7) == 0),
-    (strncmp(buf[3], "tellfail", 8) == 0),
-    (strncmp(buf[4], "tellold", 7) == 0),
-    (strncmp(buf[5], "tellprntscr", 11) == 0)
-  ));
+  char buf[7][MSG_SIZE+1]; // expects at most 7 tokens
+  strsplit (bufread, buf, 6);
+ 
+  if (strcasecmp (buf[0], "urlsnifferfile") == 0) {
+  
+    if (urlsniffer == NULL) {
+      urlsniffer = new urlsniffer_type (s);
+      if (urlsniffer == NULL) {
+        s->b->conf_error ("error initializing urlsniffer");
+      }
+      
+      urlsniffer->save_file = new String(buf[1], SAVEFILEPATHNAME_SIZE);
+      urlsniffer_list->add ((void *)urlsniffer);
+      urlsniffer->channels = new List();
+      s->script.events.add ((void *)urlsniffer_event);
+
+      s->script.cmd_bind (urlsniffer_saveurls_cmd, CMD_LEVEL, CMD_SAVE_TRIGGER, module.mod, HELP_save);	  
+      s->script.cmd_bind (urlsniffer_loadurls_cmd, CMD_LEVEL, CMD_LOAD_TRIGGER, module.mod, HELP_load);
+      s->script.cmd_bind (urlsniffer_staturls_cmd, CMD_LEVEL, CMD_STAT_TRIGGER, module.mod, HELP_load);
+      
+      int result = urlsniffer->load_urls_from_file();
+      cout << "  urlsniffer: loaded " << result << " URLs from file " << urlsniffer->save_file->getstr() << endl;
+
+    } else {
+      s->b->conf_error ("one urlsnifferfile directive per bot, please");
+    }
+    
+  } else if (strcasecmp (buf[0], "urlsniffer") == 0) {
+    
+    if (urlsniffer != NULL) {
+      urlsniffer->channels->add ((void *) new sniffing_channel_type(
+        new String(buf[1], CHANNEL_SIZE),
+          (strncmp(buf[2], "tellall", 7) == 0),
+          (strncmp(buf[3], "tellfail", 8) == 0),
+          (strncmp(buf[4], "tellold", 7) == 0),
+          (strncmp(buf[5], "tellprntscr", 11) == 0)
+        )
+       );
+    } else {
+      s->b->conf_error ("urlsniffer directive must be preceded by urlsnifferfile directive");
+    }
+  
+  
+  } else {
+    return;
+  }
 }
 
 // module termination
@@ -621,7 +639,7 @@ urlsniffer_stop (void)
   urlsniffer_list->rewind ();
   while ((urlsniffer = (urlsniffer_type *)urlsniffer_list->next ()) != NULL) {
     int result = urlsniffer->save_urls_to_file();
-    cout << "  URLsniffer: Saved " << result << " URLs to file" << endl;
+    cout << "  urlsniffer: saved " << result << " URLs to file" << endl;
     urlsniffer->s->script.events.del ((void *)urlsniffer_event);
     urlsniffer->channels->rewind();
     while ((channel = (sniffing_channel_type*)urlsniffer->channels->next ()) != NULL) {

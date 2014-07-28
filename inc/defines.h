@@ -93,6 +93,7 @@ u_char kicks_num=6;
 #define CMD_SIZE 10			// to parse received commands
 #define LINE_SIZE 10*1024		// maximum chars per line (CText)
 #define VAR_SIZE 64			// a variable's maximum size
+#define SAVEFILEPATHNAME_SIZE 512 // save file for urlsniffer's save file
 
 #endif
 

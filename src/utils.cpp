@@ -19,6 +19,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #include "utils.h"
+#include <assert.h>
 
 bool
 file_exists (c_char name)
@@ -394,10 +395,25 @@ strsplit (c_char src, char dest[][MSG_SIZE+1], u_char n)
 char *
 my_strncpy (char *dest, c_char src, size_t n)
 {
+  /* leave this here for a while to detect more overlaps when using memcpy */
+  int l,z;
+  l = strlen(src);
+  int isoverlap = 0;
+  for (z = 0; z <= l; z++)
+  {
+    if ((src + z == dest) || (src + z == dest + l))
+    {
+       isoverlap = 1;
+       break;
+    }
+  }
+  assert(isoverlap == 0);
+  /* leave this for a while 2014-07-28*/
+
   size_t i = strlen (src);
   if (i > n)
     i = n;
-  memmove (dest, src, i);
+  memcpy (dest,src, i);
   dest[i] = 0;
   return dest;
 }

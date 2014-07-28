@@ -372,11 +372,15 @@ void
 NetServer::irc_parse (void)
 {
   size_t i = 0, i2 = 0;
+  char *tmp = (char *)malloc(MSG_SIZE*sizeof(char));
   cmd_i = 0;
   memset (cmd, 0, sizeof (cmd));
 
-  if (bufread[0] == ':')
-    my_strncpy (bufread, bufread + 1, MSG_SIZE);
+  if (bufread[0] == ':') {
+    strncpy (tmp, bufread + 1, MSG_SIZE);
+    my_strncpy (bufread, tmp, MSG_SIZE);
+    free(tmp);
+  }
 
   size_t buflen = strlen (bufread);
 

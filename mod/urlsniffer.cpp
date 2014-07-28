@@ -603,7 +603,7 @@ urlsniffer_conf (NetServer *s, c_char bufread)
       s->script.cmd_bind (urlsniffer_staturls_cmd, CMD_LEVEL, CMD_STAT_TRIGGER, module.mod, HELP_load);
       
       int result = urlsniffer->load_urls_from_file();
-      cout << "  urlsniffer: loaded " << result << " URLs from file " << urlsniffer->save_file->getstr() << endl;
+      cerr << "  urlsniffer: loaded " << result << " URLs from file " << urlsniffer->save_file->getstr() << endl;
 
     } else {
       s->b->conf_error ("one urlsnifferfile directive per bot, please");
@@ -639,7 +639,7 @@ urlsniffer_stop (void)
   urlsniffer_list->rewind ();
   while ((urlsniffer = (urlsniffer_type *)urlsniffer_list->next ()) != NULL) {
     int result = urlsniffer->save_urls_to_file();
-    cout << "  urlsniffer: saved " << result << " URLs to file" << endl;
+    cerr << "  urlsniffer: saved " << result << " URLs to file" << endl;
     urlsniffer->s->script.events.del ((void *)urlsniffer_event);
     urlsniffer->channels->rewind();
     while ((channel = (sniffing_channel_type*)urlsniffer->channels->next ()) != NULL) {

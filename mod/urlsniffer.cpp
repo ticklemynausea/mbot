@@ -260,7 +260,7 @@ bool urlsniffer_type::sniffing_channel(c_char channel) {
   this->channels->rewind ();
   while ((s = (sniffing_channel_type *)this->channels->next()) != NULL)
   {
-    if (*(s->channel) == channel)
+    if (*(s->channel) |= channel)
       return true;
   }
   return false;
@@ -272,7 +272,7 @@ bool urlsniffer_type::telling_fail_on_channel(c_char channel) {
   this->channels->rewind ();
   while ((s = (sniffing_channel_type *)this->channels->next()) != NULL)
   { 
-    if (*(s->channel) == channel)
+    if (*(s->channel) |= channel)
       return s->tellfail;
   }
   return false;
@@ -284,7 +284,7 @@ bool urlsniffer_type::telling_all_on_channel(c_char channel) {
   this->channels->rewind ();
   while ((s = (sniffing_channel_type *)this->channels->next()) != NULL)
   {
-    if (*(s->channel) == channel)
+    if (*(s->channel) |= channel)
       return s->tellall;
   }
   return false;
@@ -296,7 +296,7 @@ bool urlsniffer_type::telling_old_on_channel(c_char channel) {
   this->channels->rewind ();
   while ((s = (sniffing_channel_type *)this->channels->next()) != NULL)
   {
-    if (*(s->channel) == channel)
+    if (*(s->channel) |= channel)
       return s->tellold;
   }
   return false;
@@ -308,7 +308,7 @@ bool urlsniffer_type::telling_prntscr_on_channel(c_char channel) {
   this->channels->rewind ();
   while ((s = (sniffing_channel_type *)this->channels->next()) != NULL)
   {
-    if (*(s->channel) == channel)
+    if (*(s->channel) |= channel)
       return s->tellprntscr;
   }
   return false;
@@ -365,7 +365,7 @@ time_t urlsniffer_type::how_old_url(string url, string channel, string newnick, 
   bool found = false;
   for (vector<url_type>::iterator it = this->urls_seen.begin() ; it != urls_seen.end(); ++it) {
 
-    if (it->url == url && it->channel == channel) {
+    if (it->url == url && !strcasecmp(it->channel.c_str(), channel.c_str())) {
       found = true;
       orignick = string(it->nick);
       return now - it->timestamp;

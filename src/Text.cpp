@@ -42,10 +42,31 @@ Text::read_file (c_char name)
   while (f.getline (bufread, LINE_SIZE))
     {
       strip_crlf (bufread);
+      if (!strncasecmp(bufread, "include ", 8))  {
+        
+        char buf[2][MSG_SIZE+1];
+        strsplit (bufread, buf, 2);
+        
+        Text* t_aux = new Text();
+        t_aux->read_file(buf[1]);
+        merge(t_aux);
+        delete t_aux;
+      }
       add_line (bufread);
     }
   rewind_text ();
   return 1;
+}
+
+// merge another text file into this one
+void
+Text::merge(Text* t) {
+  c_char bufline;
+
+  while ((bufline = t->get_line ()) != NULL) {
+     add_line (bufline);
+  }
+  
 }
 
 // move the current line pointer to the beginning

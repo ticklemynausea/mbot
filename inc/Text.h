@@ -39,7 +39,8 @@ public:
 private:
 
   void add_line (c_char);
-
+  void merge(Text* t);
+  
   String filename;
 
   struct line_type {

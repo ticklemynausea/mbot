@@ -583,13 +583,12 @@ static void shell_conf (NetServer *s, c_char bufread)
     );
 
     s->script.cmd_bind (shell_cmd, n_cmdlevel, buf[1], module.mod, HELP_shell);
-    cerr << "command " << buf[1] << " is bound to \"" << buf[4] << "\" with acc lvl "
-         << n_cmdlevel <<  endl;
+    //cerr << "command " << buf[1] << " is bound to \"" << buf[4] << "\" with acc lvl "
+    //     << n_cmdlevel <<  endl;
 
   /////////////////////////////////////////////////////////////////////////////
-  // Create a new timerly executed command
-  //
-  // periodic <#destination,#destination,destination,...> <interval> <autostart> <command> 
+  // Create a new periodically executed command
+
   } else if (strcasecmp (buf[0], "timer") == 0) { 
 
     String* n_destination = new String(buf[1], TRIGGER_SIZE);
@@ -600,8 +599,8 @@ static void shell_conf (NetServer *s, c_char bufread)
     timer_type* p = new  timer_type(n_destination, n_interval, n_flag, n_command, s);
     shell->timers->add((void*)p);
 
-    cerr << "timer " << n_interval << "s will run \"" << buf[4] 
-         << "\" and pipe output to " << buf[1] <<  endl;
+    //cerr << "timer " << n_interval << "s will run \"" << buf[4] 
+    //     << "\" and pipe output to " << buf[1] <<  endl;
 
   }
 }

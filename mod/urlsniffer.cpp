@@ -48,7 +48,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define TIME_BUFFER_SIZE 80
 
 // used to prevent nick highlights
-#define BLOCK_STR ("\x3" "0" "\x3")
+#define BLOCK_STR ("\x3" "0" "\x3" "\x2" "\x2")
 
 // number of seconds it takes before an old url is announced to the channel as old
 #define TIMEIN_OLD 0

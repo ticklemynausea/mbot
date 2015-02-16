@@ -352,7 +352,7 @@ contain this leak, so you can use --disable-ipv6 if it really bothers you.
   memset (a, 0, sizeof (addr_type));
   memset (&hints, 0, sizeof (hints));
   hints.ai_socktype = SOCK_STREAM;
-  if ((error = getaddrinfo (name, "domain", &hints, &result)) < 0)
+  if ((error = getaddrinfo (name, NULL, &hints, &result)) < 0)
     return 0;
   result_orig = result;
 

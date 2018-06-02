@@ -134,10 +134,18 @@ void unixtime2human(char* buffer, time_t t) {
 }
 
 void unixtime2human2(char* buffer, long age) {
-  int days = age / 60 / 60 / 24;
+  int years = age / 60 / 60 / 24 / 31 / 12;
+  int months = (age / 60 / 60 / 24 / 31) % 12;
+  int days = (age / 60 / 60 / 24) % 31;
   int hours = (age / 60 / 60) % 24;
   int minutes = (age / 60) % 60;
 
+  char pl_years[2] = {0};
+  if (years != 1)
+    strcpy(pl_years, "s");
+  char pl_months[2] = {0};
+  if (months != 1)
+    strcpy(pl_months, "s");
   char pl_days[2] = {0};
   if (days != 1)
     strcpy(pl_days, "s");
@@ -145,12 +153,12 @@ void unixtime2human2(char* buffer, long age) {
   if (hours != 1)
     strcpy(pl_hours, "s");
   char pl_minutes[2] = {0};
-  if (days != 1)
+  if (minutes != 1)
     strcpy(pl_minutes, "s");
   
   if (days == 0 && hours == 0) {
     if (minutes == 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "just now", minutes, pl_minutes);
+      snprintf(buffer, TIME_BUFFER_SIZE, "just now");
     } else {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d minute%s ago", minutes, pl_minutes);
     }
@@ -160,11 +168,17 @@ void unixtime2human2(char* buffer, long age) {
     } else {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d hour%s ago", hours, pl_hours);
     }
-  } else {
+  } else if (months == 0){
     if (hours > 0) {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d day%s, %d hour%s ago", days, pl_days, hours, pl_hours);
     } else {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d day%s ago", days, pl_days);
+    }
+  } else {
+    if (years > 0) {
+      snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s, %d month%s ago", years, pl_years, months, pl_months);
+    } else {
+      snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s, %d day%s ago", months, pl_months, days, pl_days);
     }
   }
 }

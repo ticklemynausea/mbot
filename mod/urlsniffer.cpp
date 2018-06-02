@@ -176,11 +176,9 @@ void unixtime2human2(char* buffer, long age) {
     }
   } else {
     if (years > 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s, %d month%s, %d day%s, %d hour%s ago", years, pl_years,
-        months, pl_months, days, pl_days, hours, pl_hours);
+      snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s, %d month%s ago", years, pl_years, months, pl_months);
     } else {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s, %d day%s, %d hour%s ago", months, pl_months,
-        days, pl_days, hours, pl_hours);
+      snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s, %d day%s ago", months, pl_months, days, pl_days);
     }
   }
 }

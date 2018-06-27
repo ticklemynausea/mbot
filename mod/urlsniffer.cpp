@@ -46,6 +46,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MAX_URL_LENGTH 1024
 #define MAX_URL_DETECT 3
 #define TIME_BUFFER_SIZE 80
+#define TEMP_BUFFER_SIZE 10
 
 // used to prevent nick highlights
 #define BLOCK_STR ("\x3" "0" "\x3" "\x2" "\x2")
@@ -139,7 +140,9 @@ void unixtime2human2(char *buffer, long age) {
   int days = (int) (age / 60 / 60 / 24) % 31;
   int hours = (int) (age / 60 / 60) % 24;
   int minutes = (int) (age / 60) % 60;
+  int count = 0; // Number of "items" printed
 
+  char tmp[TEMP_BUFFER_SIZE] = {0}; // Used for temporary strings to concatenate
   char pl_years[2] = {0};
   char pl_months[2] = {0};
   char pl_days[2] = {0};
@@ -157,34 +160,68 @@ void unixtime2human2(char *buffer, long age) {
   if (minutes != 1)
     strcpy(pl_minutes, "s");
 
-  if (hours == 0 && days == 0 && months == 0 && years == 0) {
-    if (minutes == 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "just now");
-    } else {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d minute%s ago", minutes, pl_minutes);
+  // Initialize the buffer
+  buffer[0] = 0;
+
+  // Years
+  if (years > 0) {
+    snprintf(tmp, TEMP_BUFFER_SIZE, "%d year%s", years, pl_years);
+    strcat(buffer, tmp);
+    count++;
+  }
+
+  // Months
+  if (months > 0) {
+    // Adds the ", "
+    if (count > 0) {
+      snprintf(tmp, TEMP_BUFFER_SIZE, ", ");
+      strcat(buffer, tmp);
     }
-  } else if (days == 0 && months == 0 && years == 0) {
-    if (minutes > 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d hour%s, %d minute%s ago", hours, pl_hours, minutes, pl_minutes);
-    } else {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d hour%s ago", hours, pl_hours);
+
+    snprintf(tmp, TEMP_BUFFER_SIZE, "%d month%s", months, pl_months);
+    strcat(buffer, tmp);
+    count++;
+  }
+
+  // Days
+  if (count < 2 && days > 0) {
+    if (count > 0) {
+      snprintf(tmp, TEMP_BUFFER_SIZE, ", ");
+      strcat(buffer, tmp);
     }
-  } else if (months == 0 && years == 0) {
-    if (hours > 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d day%s, %d hour%s ago", days, pl_days, hours, pl_hours);
-    } else {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d day%s ago", days, pl_days);
+
+    snprintf(tmp, TEMP_BUFFER_SIZE, "%d day%s", days, pl_days);
+    strcat(buffer, tmp);
+    count++;
+  }
+
+  // Hours
+  if (count < 2 && hours > 0) {
+    if (count > 0) {
+      snprintf(tmp, TEMP_BUFFER_SIZE, ", ");
+      strcat(buffer, tmp);
     }
-  } else {
-    if (years > 0 && months > 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s, %d month%s ago", years, pl_years, months, pl_months);
-    } else if (years > 0 && months == 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s ago", years, pl_years);
-    } else if (months > 0 && days > 0) {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s, %d day%s ago", months, pl_months, days, pl_days);
-    } else {
-      snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s ago", months, pl_months);
+
+    snprintf(tmp, TEMP_BUFFER_SIZE, "%d hour%s", hours, pl_hours);
+    strcat(buffer, tmp);
+    count++;
+  }
+
+  // Minutes
+  if (count < 2 && minutes > 0) {
+    if (count > 0) {
+      snprintf(tmp, TEMP_BUFFER_SIZE, ", ");
+      strcat(buffer, tmp);
     }
+
+    snprintf(tmp, TEMP_BUFFER_SIZE, "%d minute%s", minutes, pl_minutes);
+    strcat(buffer, tmp);
+  }
+
+  // Just now
+  if (count == 0 && minutes == 0) {
+    snprintf(tmp, TEMP_BUFFER_SIZE, "just now");
+    strcat(buffer, tmp);
   }
 }
 

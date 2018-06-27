@@ -46,7 +46,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MAX_URL_LENGTH 1024
 #define MAX_URL_DETECT 3
 #define TIME_BUFFER_SIZE 80
-#define TEMP_BUFFER_SIZE 10
+#define TEMP_BUFFER_SIZE 20
 
 // used to prevent nick highlights
 #define BLOCK_STR ("\x3" "0" "\x3" "\x2" "\x2")

@@ -133,52 +133,57 @@ void unixtime2human(char* buffer, time_t t) {
   strftime(buffer, TIME_BUFFER_SIZE, "%c", dt);
 }
 
-void unixtime2human2(char* buffer, long age) {
-  int years = age / 60 / 60 / 24 / 31 / 12;
-  int months = (age / 60 / 60 / 24 / 31) % 12;
-  int days = (age / 60 / 60 / 24) % 31;
-  int hours = (age / 60 / 60) % 24;
-  int minutes = (age / 60) % 60;
+void unixtime2human2(char *buffer, long age) {
+  int years = (int) age / 60 / 60 / 24 / 31 / 12;
+  int months = (int) (age / 60 / 60 / 24 / 31) % 12;
+  int days = (int) (age / 60 / 60 / 24) % 31;
+  int hours = (int) (age / 60 / 60) % 24;
+  int minutes = (int) (age / 60) % 60;
 
   char pl_years[2] = {0};
+  char pl_months[2] = {0};
+  char pl_days[2] = {0};
+  char pl_hours[2] = {0};
+  char pl_minutes[2] = {0};
+
   if (years != 1)
     strcpy(pl_years, "s");
-  char pl_months[2] = {0};
   if (months != 1)
     strcpy(pl_months, "s");
-  char pl_days[2] = {0};
   if (days != 1)
     strcpy(pl_days, "s");
-  char pl_hours[2] = {0};
   if (hours != 1)
     strcpy(pl_hours, "s");
-  char pl_minutes[2] = {0};
   if (minutes != 1)
     strcpy(pl_minutes, "s");
-  
-  if (days == 0 && hours == 0) {
+
+  if (hours == 0 && days == 0 && months == 0 && years == 0) {
     if (minutes == 0) {
       snprintf(buffer, TIME_BUFFER_SIZE, "just now");
     } else {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d minute%s ago", minutes, pl_minutes);
     }
-  } else if (days == 0) {
+  } else if (days == 0 && months == 0 && years == 0) {
     if (minutes > 0) {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d hour%s, %d minute%s ago", hours, pl_hours, minutes, pl_minutes);
     } else {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d hour%s ago", hours, pl_hours);
     }
-  } else if (months == 0){
+  } else if (months == 0 && years == 0) {
     if (hours > 0) {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d day%s, %d hour%s ago", days, pl_days, hours, pl_hours);
     } else {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d day%s ago", days, pl_days);
     }
   } else {
-    if (years > 0) {
+    if (years > 0 && months > 0) {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s, %d month%s ago", years, pl_years, months, pl_months);
-    } else {
+    } else if (years > 0 && months == 0) {
+      snprintf(buffer, TIME_BUFFER_SIZE, "%d year%s ago", years, pl_years);
+    } else if (months > 0 && days > 0) {
       snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s, %d day%s ago", months, pl_months, days, pl_days);
+    } else {
+      snprintf(buffer, TIME_BUFFER_SIZE, "%d month%s ago", months, pl_months);
     }
   }
 }

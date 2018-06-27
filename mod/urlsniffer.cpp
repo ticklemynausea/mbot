@@ -218,6 +218,11 @@ void unixtime2human2(char *buffer, long age) {
     strcat(buffer, tmp);
   }
 
+  if (count > 0) {
+    snprintf(tmp, TEMP_BUFFER_SIZE, " ago");
+    strcat(buffer, tmp);
+  }
+
   // Just now
   if (count == 0 && minutes == 0) {
     snprintf(tmp, TEMP_BUFFER_SIZE, "just now");
